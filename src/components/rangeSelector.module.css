@@ -1,0 +1,13 @@
+.rangeOptionContainer {
+  display: flex;
+  gap: var(--spacing-half);
+}
+
+.rangeOption {
+  flex: 1;
+}
+
+.rangeOptionSelected {
+  background-color: var(--priority-low-color) !important;
+  color: var(--priority-text) !important;
+}

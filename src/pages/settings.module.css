@@ -1,0 +1,23 @@
+.settingsContent {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+  padding: var(--spacing);
+}
+
+.profileBanner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: var(--spacing);
+}
+
+.settingsButton {
+  justify-content: start;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing);
+}

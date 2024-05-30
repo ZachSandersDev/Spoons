@@ -1,0 +1,42 @@
+.allTasks {
+  hr:last-child {
+    display: none;
+  }
+}
+
+.allTasksHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing);
+  gap: var(--spacing);
+}
+
+.taskList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing);
+  padding: var(--spacing);
+  // flex: 1;
+  width: 100%;
+
+  li {
+    display: flex;
+    width: 100%;
+  }
+}
+
+.taskList-size-medium {
+  padding: 0;
+  gap: var(--spacing-half);
+}
+
+.taskList-size-small {
+  padding: 0;
+  gap: var(--spacing-quarter);
+}
+
+.createTaskButton {
+  opacity: 0;
+  flex: 1;
+}

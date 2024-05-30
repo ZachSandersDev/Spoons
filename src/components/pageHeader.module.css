@@ -1,0 +1,19 @@
+.pageHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing);
+  gap: var(--spacing);
+
+  h1 {
+    /* font-size: 2em; */
+    /* padding: 0 var(--spacing); */
+    color: var(--color-accent);
+  }
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing);
+}

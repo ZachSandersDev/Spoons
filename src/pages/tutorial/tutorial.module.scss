@@ -1,0 +1,64 @@
+.tutorial {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-2);
+
+  position: relative;
+
+  height: 100%;
+  padding: var(--spacing);
+
+  text-align: center;
+
+  img {
+    width: 200px;
+    height: auto;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+  }
+
+  p {
+    opacity: 0;
+    animation: fadeIn 0.5s ease-in-out forwards;
+  }
+
+  p:nth-child(1) {
+    animation-delay: 0.25s;
+  }
+  p:nth-child(2) {
+    animation-delay: 0.5s;
+  }
+  p:nth-child(3) {
+    animation-delay: 0.75s;
+  }
+  p:nth-child(4) {
+    animation-delay: 1s;
+  }
+}
+
+.spoons {
+  color: var(--color-accent);
+}
+
+.nextButton {
+  position: absolute;
+  gap: var(--spacing);
+
+  svg {
+    fill: hsl(var(--primary-foreground));
+  }
+
+  bottom: var(--spacing-2);
+  right: var(--spacing-2);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}

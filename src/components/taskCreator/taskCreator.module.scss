@@ -1,0 +1,73 @@
+.taskPopoverTrigger {
+  &[aria-expanded="true"] {
+    position: relative;
+    z-index: 2;
+  }
+}
+
+.taskPopover {
+  padding: var(--spacing) var(--spacing-2);
+  padding-bottom: var(--spacing-3);
+  padding-bottom: calc(var(--spacing-3) + env(safe-area-inset-bottom));
+
+  border-radius: 10px 10px;
+  border: none;
+
+  background-color: var(--color-background-card);
+}
+
+.taskPopOverCover {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  backdrop-filter: blur(10px);
+  z-index: 1;
+  animation: fadeIn 0.15s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.taskForm {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--spacing-2);
+}
+
+.taskField {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing);
+  width: 100%;
+}
+
+.formHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.priorityOptionSelected-0 {
+  background-color: var(--priority-top-color) !important;
+  color: var(--priority-text);
+}
+
+.priorityOptionSelected-1 {
+  background-color: var(--priority-normal-color) !important;
+  color: var(--priority-text);
+}
+
+.priorityOptionSelected-2 {
+  background-color: var(--priority-low-color) !important;
+  color: var(--priority-text);
+}

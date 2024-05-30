@@ -1,0 +1,9 @@
+.stats {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-quarter);
+
+  align-self: end;
+  padding: 0 var(--spacing-2);
+  color: hsl(var(--muted-foreground));
+}

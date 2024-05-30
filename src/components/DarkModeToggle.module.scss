@@ -1,0 +1,92 @@
+$toggleSize: 26px;
+$togglePadding: 2px;
+
+$toggleHeight: $toggleSize + 2 * $togglePadding;
+$toggleWidth: 60px;
+
+.toggleContainer {
+  position: relative;
+
+  display: flex;
+  width: $toggleWidth;
+  height: $toggleHeight;
+  padding: $togglePadding;
+
+  border: none;
+  box-shadow: 0 0 0 2px var(--color-color);
+  border-radius: $toggleHeight * 0.5;
+  background-color: var(--color-background);
+
+  transition: all 0.25s ease-in-out;
+}
+
+.toggle {
+  position: absolute;
+  z-index: 1;
+
+  border-radius: 50%;
+  background-color: var(--color-color);
+
+  transition: all 0.25s ease-in-out;
+
+  height: $toggleSize;
+  width: $toggleSize;
+}
+
+.toggleActive {
+  .toggle {
+    transform: translateX($toggleWidth - $toggleSize - 2 * $togglePadding);
+  }
+
+  .lightModeIcon {
+    svg {
+      fill: hsl(0, 0%, 30%);
+    }
+  }
+
+  .darkModeIcon {
+    svg {
+      fill: black;
+    }
+  }
+}
+
+.modeIcon {
+  position: absolute;
+  z-index: 2;
+  padding: $togglePadding * 2;
+
+  svg {
+    width: $toggleSize - $togglePadding * 4;
+    height: $toggleSize - $togglePadding * 4;
+  }
+}
+
+.lightModeIcon {
+  svg {
+    fill: white;
+  }
+}
+
+.darkModeIcon {
+  right: $togglePadding;
+
+  svg {
+    fill: hsl(0, 0%, 50%);
+  }
+}
+
+@keyframes activate {
+  0% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(
+        ($toggleWidth - $toggleSize - 2 * $togglePadding) * 0.5
+      )
+      scale(0.2);
+  }
+  100% {
+    transform: translateX($toggleWidth - $toggleSize - 2 * $togglePadding);
+  }
+}

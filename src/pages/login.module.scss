@@ -1,0 +1,25 @@
+.loginPage {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  flex: 1;
+  text-align: left;
+
+  gap: var(--spacing-2);
+
+  h2 {
+    font-size: 1.1em;
+  }
+}
+
+.loginForm {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing);
+
+  width: 300px;
+
+  button {
+    align-self: flex-end;
+  }
+}

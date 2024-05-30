@@ -1,0 +1,24 @@
+.dayCell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing);
+
+  padding: var(--spacing-half);
+
+  flex: 1;
+}
+
+.dayCell-size-small {
+  padding: 0 var(--spacing-quarter);
+  gap: var(--spacing-half);
+}
+
+.dateIndicator {
+  text-align: center;
+}
+
+.dateIndicatorToday {
+  color: var(--color-accent);
+  box-shadow: 0 3px var(--color-accent);
+}

@@ -1,0 +1,94 @@
+body {
+  margin: 0;
+  font-size: 16px;
+
+  background-color: var(--color-background);
+  color: var(--color-color);
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+
+  height: calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+
+  margin-top: env(safe-area-inset-top);
+  margin-bottom: env(safe-area-inset-bottom);
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  flex: 1;
+}
+
+*,
+*::after,
+*::before {
+  box-sizing: border-box;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+[list]::-webkit-calendar-picker-indicator {
+  display: none !important;
+}
+
+input {
+  font-family: inherit;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+  font-weight: 700;
+  font-family: sans-serif;
+  margin: 0;
+}
+
+h1 {
+  font-size: 1.5rem;
+}
+
+ul {
+  margin: 0;
+  padding: 0 2ch;
+}
+
+table {
+  border-collapse: collapse;
+  word-break: break-all;
+  width: 100%;
+
+  td {
+    padding: 0.5em;
+  }
+}
+
+hr {
+  width: 100%;
+  margin: 0;
+  border: none;
+  border-top: 1px solid var(--color-border);
+}
+
+strong {
+  font-weight: 900;
+}
+
+button > svg {
+  fill: var(--color-color);
+}
