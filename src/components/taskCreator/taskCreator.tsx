@@ -63,6 +63,7 @@ export function TaskForm(props: TaskFormProps) {
             .fill(0)
             .map((_, i) => ({ value: i + 1, label: `${i + 1}` }))}
           onChange={(value) => props.setTask({ ...props.task, spoons: value })}
+          selectedClass={styles[`spoonOptionSelected-${props.task.spoons}`]}
         />
       </div>
 

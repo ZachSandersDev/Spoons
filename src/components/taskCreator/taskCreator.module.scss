@@ -57,6 +57,39 @@
   width: 100%;
 }
 
+.spoonOptionSelected-1 {
+  background-color: var(--priority-low-color) !important;
+  color: var(--priority-text);
+}
+
+.spoonOptionSelected-2 {
+  background-color: color-mix(
+    in lch,
+    var(--priority-normal-color) 50%,
+    var(--priority-low-color)
+  ) !important;
+  color: var(--priority-text);
+}
+
+.spoonOptionSelected-3 {
+  background-color: var(--priority-normal-color) !important;
+  color: var(--priority-text);
+}
+
+.spoonOptionSelected-4 {
+  background-color: color-mix(
+    in lch,
+    var(--priority-normal-color) 50%,
+    var(--priority-top-color)
+  ) !important;
+  color: var(--priority-text);
+}
+
+.spoonOptionSelected-5 {
+  background-color: var(--priority-top-color) !important;
+  color: var(--priority-text);
+}
+
 .priorityOptionSelected-0 {
   background-color: var(--priority-top-color) !important;
   color: var(--priority-text);
