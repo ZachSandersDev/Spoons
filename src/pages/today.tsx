@@ -7,17 +7,13 @@ import styles from "./today.module.css";
 
 import AddIcon from "~/assets/icons/add.svg?raw";
 import MoreIcon from "~/assets/icons/more.svg?raw";
+import { Menu, MenuItem } from "~/components/menu";
 import { PageHeader } from "~/components/pageHeader";
 import { RangeSelector } from "~/components/rangeSelector";
 import { SecondaryMessage } from "~/components/secondaryMessage/secondaryMessage";
 import { TaskList } from "~/components/taskList";
 import { Button } from "~/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "~/components/ui/dropdown-menu";
+
 import {
   createDayProgressQuery,
   createPreferencesQuery,
@@ -43,15 +39,18 @@ export default function Today() {
   const userGoal = () => prefs.data?.spoonsPerDay || DEFAULT_CAPACITY;
   const spoonsCompleted = () => dayProgress.data?.spoonsCompleted || 0;
   const capacity = () => dayProgress.data?.spoonTarget || userGoal();
+  const remainingSpoons = () => capacity() - spoonsCompleted();
 
   const hasTasks = () => !!todayTasks.data && todayTasks.data?.length > 0;
+  const hasUnreachableTasks = () =>
+    !!todayTasks.data?.some((t) => t.spoons > remainingSpoons());
 
   const tasks = createMemo(() => {
-    if (!hasTasks() || spoonsCompleted() >= capacity()) return [];
+    if (!hasTasks() || remainingSpoons() <= 0) {
+      return [];
+    }
 
-    const remainingSpoons = capacity() - spoonsCompleted();
-
-    const taskChunks = chunkTasks(todayTasks.data!, remainingSpoons);
+    const taskChunks = chunkTasks(todayTasks.data!, remainingSpoons());
     return taskChunks[0]?.tasks || [];
   });
 
@@ -95,19 +94,30 @@ export default function Today() {
     db().dayProgress.setDayProgress(newDayProg);
   };
 
+  const resetTarget = async () => {
+    if (!dayProgress.data) return;
+
+    const newDayProg: DayProgress = {
+      ...dayProgress.data,
+      spoonTarget: userGoal(),
+    };
+
+    db().dayProgress.setDayProgress(newDayProg);
+  };
+
   return (
     <>
       <PageHeader title="Today">
-        <DropdownMenu>
-          <DropdownMenuTrigger>
-            <Button variant="ghost" size="icon" innerHTML={MoreIcon} />
-          </DropdownMenuTrigger>
-          <DropdownMenuContent>
-            <DropdownMenuItem onClick={resetProgress}>
-              Reset today&rsquo;s progress
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <Menu
+          trigger={<Button variant="ghost" size="icon" innerHTML={MoreIcon} />}
+        >
+          <MenuItem onClick={resetProgress}>
+            Reset today&rsquo;s progress
+          </MenuItem>
+          <MenuItem onClick={resetTarget}>
+            Reset today&rsquo;s added spoons
+          </MenuItem>
+        </Menu>
 
         <TaskCreator>
           <Button variant="ghost" size="icon" innerHTML={AddIcon} />
@@ -124,6 +134,9 @@ export default function Today() {
         <Show when={spoonsCompleted()}>
           <span>{spoonsCompleted()} complete!</span>
         </Show>
+        <Show when={remainingSpoons() > 0}>
+          <span>{remainingSpoons()} remaining</span>
+        </Show>
       </div>
 
       <Show when={!todayTasks.isLoading && !hasTasks()}>
@@ -132,7 +145,12 @@ export default function Today() {
         </SecondaryMessage>
       </Show>
 
-      <Show when={hasTasks() && spoonsCompleted() >= capacity()}>
+      <Show
+        when={
+          hasTasks() &&
+          (spoonsCompleted() >= capacity() || hasUnreachableTasks())
+        }
+      >
         <SecondaryMessage>
           <p>Congrats! You&rsquo;ve reached your goal for today!</p>
           <p></p>
@@ -149,13 +167,6 @@ export default function Today() {
             }))}
             onChange={handleAddCapacity}
           />
-
-          <Button
-            onClick={() => handleAddCapacity(userGoal())}
-            variant="secondary"
-          >
-            Add more spoons
-          </Button>
         </SecondaryMessage>
       </Show>
     </>

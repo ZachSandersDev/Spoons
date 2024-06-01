@@ -99,6 +99,16 @@
 .description {
   font-size: 0.75em;
   line-height: 0.9em;
+
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-half);
+
+  svg {
+    width: 1.2em;
+    height: 1.2em;
+    fill: var(--text-color);
+  }
 }
 
 .spoons {

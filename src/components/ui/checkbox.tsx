@@ -18,7 +18,7 @@ const Checkbox = <T extends ValidComponent = "div">(
       {...others}
     >
       <CheckboxPrimitive.Input />
-      <CheckboxPrimitive.Control class="peer size-5 shrink-0 rounded-sm border border-primary ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[checked]:border-none data-[checked]:bg-primary data-[checked]:text-primary-foreground">
+      <CheckboxPrimitive.Control class="peer size-7 shrink-0 rounded-lg border border-primary ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[checked]:border-none data-[checked]:bg-primary data-[checked]:text-primary-foreground">
         <CheckboxPrimitive.Indicator>
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -28,7 +28,7 @@ const Checkbox = <T extends ValidComponent = "div">(
             stroke-width="2"
             stroke-linecap="round"
             stroke-linejoin="round"
-            class="size-5"
+            class="size-7"
           >
             <path d="M5 12l5 5l10 -10" />
           </svg>

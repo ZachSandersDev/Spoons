@@ -8,9 +8,10 @@ import { TaskEditor } from "./taskCreator/taskCreator";
 import { Checkbox } from "./ui/checkbox";
 
 import InfoIcon from "~/assets/icons/info.svg?raw";
+import MoreIcon from "~/assets/icons/more.svg?raw";
 import { useDb } from "~/lib/api/db";
-import { TaskEvent, newTaskEvent } from "~/lib/types/TaskEvent";
-import { classes } from "~/lib/utils";
+import { TaskEvent } from "~/lib/types/TaskEvent";
+import { classes, dateTimeFrom } from "~/lib/utils";
 
 export function Task(props: {
   task: TaskEvent;
@@ -118,9 +119,6 @@ export function Task(props: {
   ) {
     if (e.key === "Enter") {
       e.preventDefault();
-      const newTask = newTaskEvent();
-      await db().addTask(newTask);
-      props.onNewTask?.(newTask);
     }
 
     if (e.key === "Backspace" && e.currentTarget.innerText.length === 0) {
@@ -165,7 +163,18 @@ export function Task(props: {
             </span>
 
             <Show when={taskDescription().length > 0}>
-              <span class={styles.description}>{taskDescription()}</span>
+              <div class={styles.description}>
+                <Show
+                  when={
+                    dateTimeFrom(task().targetDate, task().targetTime).diffNow(
+                      "minutes"
+                    ).minutes < 0
+                  }
+                >
+                  <span innerHTML={InfoIcon} />
+                </Show>
+                <span>{taskDescription()}</span>
+              </div>
             </Show>
           </div>
 
@@ -177,7 +186,7 @@ export function Task(props: {
             setTask={setTask}
             onUpdate={handleSaveIfDirty}
             onClose={handleSaveIfDirty}
-            innerHTML={InfoIcon}
+            innerHTML={MoreIcon}
           />
         </div>
       </Show>
