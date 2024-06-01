@@ -15,11 +15,25 @@
 .loginForm {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing);
+  gap: var(--spacing-2);
 
   width: 300px;
+}
 
-  button {
-    align-self: flex-end;
+.accountCallout {
+  position: absolute;
+  bottom: var(--spacing-3);
+  left: 50%;
+  transform: translateX(-50%);
+
+  white-space: nowrap;
+
+  color: hsl(var(--muted-foreground));
+
+  font-size: 0.9em;
+
+  a {
+    color: hsl(var(--foreground));
+    font-weight: bold;
   }
 }

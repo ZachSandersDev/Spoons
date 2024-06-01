@@ -1,26 +1,42 @@
-import { GoogleAuthProvider, signInWithEmailAndPassword } from "@firebase/auth";
+import { FirebaseAuthentication } from "@capacitor-firebase/authentication";
+import {
+  signInWithEmailAndPassword,
+  GoogleAuthProvider,
+  createUserWithEmailAndPassword,
+  signInWithCredential,
+} from "@firebase/auth";
 
-import { createUserWithEmailAndPassword, signInWithPopup } from "firebase/auth";
-import { For, createSignal } from "solid-js";
+import { signInAnonymously } from "firebase/auth";
+import { Show, createSignal } from "solid-js";
 
 import styles from "./login.module.scss";
 
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 
-import {
-  RadioGroup,
-  RadioGroupItem,
-  RadioGroupItemLabel,
-} from "~/components/ui/radio-group";
 import { auth } from "~/lib/api/firebase";
 
 type Mode = "Login" | "Register";
 
 export default function LoginPage() {
+  const [error, setError] = createSignal<string | null>(null);
+
   const handleGoogleLogin = async () => {
-    const googleProvider = new GoogleAuthProvider();
-    signInWithPopup(auth, googleProvider);
+    const result = await FirebaseAuthentication.signInWithGoogle();
+    if (!result) {
+      setError("Google sign in failed");
+      return;
+    }
+
+    const credential = GoogleAuthProvider.credential(
+      result.credential?.idToken
+    );
+
+    await signInWithCredential(auth, credential);
+  };
+
+  const handleAnonymousLogin = async () => {
+    await signInAnonymously(auth);
   };
 
   const [mode, setMode] = createSignal<Mode>("Register");
@@ -45,21 +61,9 @@ export default function LoginPage() {
 
   return (
     <section class={`view ${styles.loginPage}`}>
-      <h2>Log in with socials</h2>
-      <Button onClick={handleGoogleLogin}>Google</Button>
+      <span>{error()}</span>
 
-      <h2>Log in with email</h2>
       <form class={styles.loginForm} onSubmit={handleLogin}>
-        <RadioGroup onChange={(e) => setMode(e as Mode)} value={mode()}>
-          <For each={["Register", "Login"] satisfies Mode[]}>
-            {(mode) => (
-              <RadioGroupItem value={mode}>
-                <RadioGroupItemLabel>{mode}</RadioGroupItemLabel>
-              </RadioGroupItem>
-            )}
-          </For>
-        </RadioGroup>
-
         <Input
           type="text"
           placeholder="Username"
@@ -73,6 +77,42 @@ export default function LoginPage() {
 
         <Button type="submit">{mode()}</Button>
       </form>
+
+      <Button variant="secondary" onClick={handleGoogleLogin}>
+        Sign in with Google
+      </Button>
+
+      <Button variant="secondary" onClick={handleAnonymousLogin}>
+        Skip sign in
+      </Button>
+
+      <Show when={mode() === "Register"}>
+        <span class={styles.accountCallout}>
+          Already have an account?{" "}
+          <a
+            onClick={(e) => {
+              e.preventDefault();
+              setMode("Login");
+            }}
+          >
+            Login
+          </a>
+        </span>
+      </Show>
+
+      <Show when={mode() === "Login"}>
+        <span class={styles.accountCallout}>
+          Don&rsquo;t have an account?{" "}
+          <a
+            onClick={(e) => {
+              e.preventDefault();
+              setMode("Register");
+            }}
+          >
+            Register
+          </a>
+        </span>
+      </Show>
     </section>
   );
 }
