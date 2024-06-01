@@ -1,4 +1,3 @@
-import { useNavigate } from "@solidjs/router";
 import { Show, createSignal } from "solid-js";
 
 import LoginPage from "../login";
@@ -7,7 +6,6 @@ import styles from "./tutorial.module.scss";
 
 import ChevronRightIcon from "~/assets/icons/chevron_right_icon.svg?raw";
 import { Button } from "~/components/ui/button";
-import { setTutorialComplete } from "~/lib/state/tutorial";
 
 export default function Tutorial() {
   const [currentStep, setCurrentStep] = createSignal(1);
@@ -99,8 +97,6 @@ function Step3() {
 }
 
 function Step4() {
-  const navigate = useNavigate();
-
   return (
     <>
       <p>Want to give it a shot?</p>
@@ -108,17 +104,6 @@ function Step4() {
       <p>
         <LoginPage />
       </p>
-
-      <Button
-        class={styles.nextButton}
-        variant="secondary"
-        onClick={() => {
-          setTutorialComplete();
-          navigate("/");
-        }}
-      >
-        Skip
-      </Button>
     </>
   );
 }
