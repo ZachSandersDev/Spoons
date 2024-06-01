@@ -28,7 +28,12 @@ export function InfiniteSnapScroller<T>(props: InfiniteSnapScrollerProps<T>) {
     horizontal: true,
 
     onChange: (v) => {
-      if (!v.range || v.isScrolling) return;
+      if (
+        !v.range ||
+        // Don't update the middle page immediately when scrolling
+        (useMiddleAsOffset(v.range.startIndex) === 0 && v.isScrolling)
+      )
+        return;
       props.setPage(props.getPage(useMiddleAsOffset(v.range.startIndex)));
     },
   });
