@@ -11,7 +11,7 @@ export function chunkTasks(tasks: TaskEvent[], chunkSize: number) {
   const tasksByDay: Record<number, TaskChunk | undefined> = {};
 
   const tasksWithDates = tasks.filter((t) => !!t.targetDate);
-  const tasksWithoutDates = tasks.filter((t) => !t.targetDate);
+  let tasksWithoutDates = tasks.filter((t) => !t.targetDate);
 
   const today = DateTime.now().startOf("day");
 
@@ -34,6 +34,9 @@ export function chunkTasks(tasks: TaskEvent[], chunkSize: number) {
     tasksByDay[dateOffset]!.spoons += task.spoons;
     tasksByDay[dateOffset]!.tasks.push(task);
   }
+
+  // Remove any tasks that will never fit
+  tasksWithoutDates = tasksWithoutDates.filter((t) => t.spoons <= chunkSize);
 
   // Push unscheduled tasks as needed
   let dateOffset = 0;
@@ -76,11 +79,11 @@ export function chunkTasks(tasks: TaskEvent[], chunkSize: number) {
   for (const day of Object.values(tasksByDay)) {
     day?.tasks.sort((a, b) => {
       if (!a.targetTime && b.targetTime) {
-        return -1;
+        return 1;
       }
 
       if (a.targetTime && !b.targetTime) {
-        return 1;
+        return -1;
       }
 
       if (a.priority !== b.priority) {
