@@ -1,8 +1,8 @@
 import { User } from "@firebase/auth";
 
-import { useLocation, useNavigate } from "@solidjs/router";
 import { createEffect, createSignal } from "solid-js";
 
+import { location, setLocation } from "./location";
 import { isTutorialComplete, setTutorialComplete } from "./tutorial";
 
 import { auth } from "~/lib/api/firebase";
@@ -12,9 +12,6 @@ export const [isLoginCheckComplete, setIsLoginCheckComplete] =
 export const [user, setUser] = createSignal<User | null>(null);
 
 export function createLoginListener() {
-  const navigate = useNavigate();
-  const location = useLocation();
-
   auth.onAuthStateChanged((firebaseUser) => {
     setUser(firebaseUser);
     setIsLoginCheckComplete(true);
@@ -27,12 +24,12 @@ export function createLoginListener() {
 
     // Navigate to the tutorial if the user is not logged in and hasn't completed the tutorial
     if (!user() && !isTutorialComplete()) {
-      navigate("/tutorial");
+      setLocation("/tutorial");
       return;
     }
 
     if (!user()) {
-      navigate("/login");
+      setLocation("/login");
       return;
     }
 
@@ -40,8 +37,8 @@ export function createLoginListener() {
     setTutorialComplete();
 
     // Navigate to the home page if the user is logged in
-    if (location.pathname === "/tutorial" || location.pathname === "/login") {
-      navigate("/");
+    if (location() === "/tutorial" || location() === "/login") {
+      setLocation("/");
     }
   });
 }

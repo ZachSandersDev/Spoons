@@ -7,16 +7,17 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
+    "ionic": "npm run build && cap sync",
     "ionic:build": "npm run build",
     "ionic:serve": "vite --host=0.0.0.0",
     "ionic:sync": "capacitor sync"
   },
   "dependencies": {
+    "@capacitor-firebase/authentication": "^6.0.0",
     "@capacitor/core": "^6.0.0",
     "@capacitor/ios": "^6.0.0",
     "@capacitor/local-notifications": "^6.0.0",
     "@kobalte/core": "^0.13.2",
-    "@solidjs/router": "^0.13.3",
     "@tanstack/solid-query": "^5.38.0",
     "@tanstack/solid-virtual": "^3.5.0",
     "class-variance-authority": "^0.7.0",

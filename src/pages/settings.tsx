@@ -1,4 +1,3 @@
-import { useNavigate } from "@solidjs/router";
 import { signOut } from "firebase/auth";
 
 import { Profile } from "./calendar/nav/profile";
@@ -18,17 +17,16 @@ import {
   areNotificationsAllowed,
   requestNotificationPermission,
 } from "~/lib/api/notifications";
+import { setLocation } from "~/lib/state/location";
 import { user } from "~/lib/state/user";
 
 export default function SettingsPage() {
   const db = useDb();
   const prefs = createPreferencesQuery();
 
-  const navigate = useNavigate();
-
   function handleLoginClick() {
     if (!user()) {
-      navigate("/login");
+      setLocation("/login");
     }
 
     signOut(auth);
