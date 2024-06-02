@@ -17,9 +17,9 @@
   --color-border: hsl(0, 0%, 80%);
   --color-shadow: hsla(0, 0%, 0%, 0.1);
 
-  --priority-top-color: hsl(0, 56%, 47%);
-  --priority-normal-color: hsl(190, 75%, 39%);
-  --priority-low-color: hsl(0, 0%, 36%);
+  --priority-top-color: hsl(0, 62%, 54%);
+  --priority-normal-color: hsl(190, 94%, 35%);
+  --priority-low-color: hsl(0, 0%, 44%);
   --priority-text: white;
 }
 
@@ -65,6 +65,7 @@
   --spacing-3: calc(var(--spacing) * 3);
 
   --radius: 5px;
+  --radius-small: 3px;
 
   --app-header-height: 50px;
   --app-nav-size: 130px;
