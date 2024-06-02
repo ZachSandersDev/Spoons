@@ -2,7 +2,10 @@ import { DateTime } from "luxon";
 import { createSignal } from "solid-js";
 
 import styles from "./calendarPage.module.css";
-import { InfiniteSnapScroller } from "./infiniteSnapScroller";
+import {
+  InfiniteSnapScroller,
+  useInfiniteSnapScroller,
+} from "./infiniteSnapScroller";
 import { MonthView } from "./month";
 import { DateRangeTitle } from "./nav/dateRangeTitle";
 import { ModeSelect } from "./nav/modeSelect";
@@ -23,7 +26,7 @@ function getStartOfRange(mode: Mode, date: DateTime) {
   }
   if (mode === "week") {
     // Luxon weeks start on Monday, so we start at -1 to get the first day of the week
-    return date.startOf("week").plus({ days: -1 });
+    return date.plus({ days: 1 }).startOf("week").plus({ days: -1 });
   }
 
   return date.startOf("month");
@@ -47,10 +50,15 @@ export default function CalendarPage() {
     return startingPoint().plus({ months: offset });
   };
 
+  const { props, resetToCenter } = useInfiniteSnapScroller<DateTime>({
+    getPage,
+    setPage: setCurrentDate,
+  });
+
   return (
     <>
       <PageHeader title={"Planning"}>
-        <Button onClick={() => setCurrentDate(startingPoint())}>Today</Button>
+        <Button onClick={resetToCenter}>Today</Button>
         <ModeSelect />
       </PageHeader>
 
@@ -58,11 +66,7 @@ export default function CalendarPage() {
         <DateRangeTitle currentDate={currentDate()} />
       </h2>
 
-      <InfiniteSnapScroller<DateTime>
-        isOriginal={startingPoint().equals(currentDate())}
-        setPage={(date) => setCurrentDate(date)}
-        getPage={getPage}
-      >
+      <InfiniteSnapScroller<DateTime> {...props}>
         {(date) => {
           if (mode() === "week") {
             return (

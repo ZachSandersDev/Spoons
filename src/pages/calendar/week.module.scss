@@ -4,4 +4,8 @@
   font-size: 0.8em;
   flex: 1;
   overflow: hidden;
+
+  hr:last-child {
+    display: none;
+  }
 }

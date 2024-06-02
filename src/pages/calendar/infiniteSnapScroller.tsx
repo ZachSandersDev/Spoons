@@ -1,79 +1,111 @@
-import { createVirtualizer } from "@tanstack/solid-virtual";
-import { JSX, createEffect, onMount } from "solid-js";
+import { Virtualizer, createVirtualizer } from "@tanstack/solid-virtual";
+import { JSX, createSignal, onMount } from "solid-js";
 
 import styles from "./infiniteSnapScroller.module.css";
 
 import { classes } from "~/lib/utils";
 
+const SCROLL_SIZE = 90;
+
 interface InfiniteSnapScrollerProps<T> {
-  isOriginal: boolean;
   getPage: (offset: number) => T;
-  setPage: (page: T) => void;
   children: (page: T) => JSX.Element;
+
+  virtualizer: Virtualizer<HTMLDivElement, HTMLDivElement>;
+  setScrollContainer: (el: HTMLDivElement | null) => void;
+  handleReset: () => void;
 }
 
-const SCROLL_SIZE = 100;
-
 export function InfiniteSnapScroller<T>(props: InfiniteSnapScrollerProps<T>) {
-  let scrollContainer: HTMLDivElement;
+  onMount(props.handleReset);
 
-  function useMiddleAsOffset(index: number) {
-    return index - SCROLL_SIZE / 2;
+  return (
+    <div class={styles.scrollerContainer} ref={props.setScrollContainer}>
+      <div
+        style={{
+          height: "100%",
+          width: `${props.virtualizer.getTotalSize()}px`,
+          position: "relative",
+        }}
+      />
+
+      {props.virtualizer.getVirtualItems().map((item) => (
+        <div
+          class={classes(styles.scrollerPage, styles.scrollPage)}
+          style={{
+            transform: `translateX(${item.start}px)`,
+          }}
+        >
+          {props.children(props.getPage(useMiddleAsOffset(item.index)))}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function useMiddleAsOffset(index: number) {
+  return index - SCROLL_SIZE / 2;
+}
+
+export function useInfiniteSnapScroller<T>(props: {
+  getPage: (offset: number) => T;
+  setPage: (page: T) => void;
+}) {
+  const [scrollContainer, setScrollContainer] =
+    createSignal<HTMLDivElement | null>(null);
+
+  function estimateSize() {
+    const contentSection = document.getElementById("content");
+
+    if (contentSection) {
+      return contentSection.clientWidth;
+    }
+
+    return window.innerWidth;
   }
 
-  const virtualizer = createVirtualizer({
+  let prevPage = useMiddleAsOffset(0);
+
+  const virtualizer = createVirtualizer<HTMLDivElement, HTMLDivElement>({
     count: SCROLL_SIZE,
-    getScrollElement: () => scrollContainer,
-    estimateSize: () => window.innerWidth,
+    getScrollElement: scrollContainer,
+    estimateSize,
     horizontal: true,
 
     onChange: (v) => {
       if (
         !v.range ||
+        v.range.startIndex === prevPage ||
         // Don't update the middle page immediately when scrolling
         (useMiddleAsOffset(v.range.startIndex) === 0 && v.isScrolling)
-      )
+      ) {
         return;
+      }
+
+      prevPage = v.range.startIndex;
       props.setPage(props.getPage(useMiddleAsOffset(v.range.startIndex)));
     },
   });
 
   const handleReset = () => {
-    scrollContainer.style.scrollSnapType = "";
-    virtualizer.scrollToIndex(SCROLL_SIZE / 2);
+    if (!scrollContainer()) return;
 
-    setTimeout(() => {
-      scrollContainer.style.scrollSnapType = "x mandatory";
+    scrollContainer()!.style.scrollSnapType = "";
+
+    scrollContainer()!.scrollTo((SCROLL_SIZE / 2) * estimateSize(), 0);
+
+    requestAnimationFrame(() => {
+      scrollContainer()!.style.scrollSnapType = "x mandatory";
     });
   };
 
-  onMount(handleReset);
-  createEffect(() => {
-    // React on the center value
-    if (!props.isOriginal) return;
-    handleReset();
-  });
-
-  return (
-    <div class={styles.scrollerContainer} ref={(el) => (scrollContainer = el)}>
-      <div
-        style={{
-          height: "100%",
-          width: `${virtualizer.getTotalSize()}px`,
-          position: "relative",
-        }}
-      >
-        {virtualizer.getVirtualItems().map((item) => (
-          <div
-            class={classes(styles.scrollerPage, styles.scrollPage)}
-            style={{
-              transform: `translateX(${item.start}px)`,
-            }}
-          >
-            {props.children(props.getPage(useMiddleAsOffset(item.index)))}
-          </div>
-        ))}
-      </div>
-    </div>
-  );
+  return {
+    props: {
+      virtualizer,
+      setScrollContainer,
+      getPage: props.getPage,
+      handleReset,
+    } satisfies Partial<InfiniteSnapScrollerProps<T>>,
+    resetToCenter: () => handleReset(),
+  };
 }
