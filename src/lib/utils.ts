@@ -1,6 +1,7 @@
 import type { ClassValue } from "clsx";
 import { clsx } from "clsx";
 import { DateTime } from "luxon";
+import { createSignal, onCleanup } from "solid-js";
 import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
@@ -36,4 +37,18 @@ export function dateTimeFrom(
   });
 
   return dateTime;
+}
+
+export function useIsDesktop() {
+  const query = window.matchMedia("(min-width: 768px)");
+
+  const [isDesktop, setIsDesktop] = createSignal(query.matches);
+
+  function onChange(e: MediaQueryListEvent) {
+    setIsDesktop(e.matches);
+  }
+  query.addEventListener("change", onChange);
+  onCleanup(() => query.removeEventListener("change", onChange));
+
+  return isDesktop;
 }

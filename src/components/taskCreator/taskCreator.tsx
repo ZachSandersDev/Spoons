@@ -1,6 +1,8 @@
-import { Accessor, JSX, ParentProps, Show, createSignal } from "solid-js";
+import { Popover as KPopover } from "@kobalte/core/popover";
+import { JSX, ParentProps, Show, createSignal } from "solid-js";
 
 import { RangeSelector } from "../rangeSelector";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { Sheet, SheetContent, SheetTrigger } from "../ui/sheet";
 
 import { DatePicker } from "./datePicker";
@@ -13,7 +15,7 @@ import { Label } from "~/components/ui/label";
 
 import { useDb } from "~/lib/api/db";
 import { TaskEvent, newTaskEvent } from "~/lib/types/TaskEvent";
-import { classes } from "~/lib/utils";
+import { useIsDesktop } from "~/lib/utils";
 
 export type TaskFormProps = {
   task: TaskEvent;
@@ -94,7 +96,6 @@ export function TaskForm(props: TaskFormProps) {
 export function TaskCreator(
   props: ParentProps<{
     class?: string;
-    anchorRef?: Accessor<HTMLElement>;
     preview?: (task: TaskEvent | null) => JSX.Element;
     onNewTask?: (task: TaskEvent) => void;
   }>
@@ -124,11 +125,10 @@ export function TaskCreator(
   return (
     <>
       {props.preview?.(task())}
-      <Sheet onOpenChange={handleOpenChange} open={isOpen()}>
-        <SheetTrigger class={classes(styles.taskPopoverTrigger, props.class)}>
-          {props.children}
-        </SheetTrigger>
-        <SheetContent class={styles.taskPopover} position="bottom">
+      <TaskPopup
+        isOpen={isOpen()}
+        onOpenChange={handleOpenChange}
+        popupContent={
           <Show when={task()}>
             <TaskForm
               task={task()!}
@@ -138,8 +138,10 @@ export function TaskCreator(
               submitText="Create"
             />
           </Show>
-        </SheetContent>
-      </Sheet>
+        }
+      >
+        {props.children}
+      </TaskPopup>
     </>
   );
 }
@@ -147,12 +149,11 @@ export function TaskCreator(
 export function TaskEditor(
   props: ParentProps<{
     class?: string;
-    anchorRef?: Accessor<HTMLElement>;
+
     task: TaskEvent;
     setTask: (task: TaskEvent) => void;
     onUpdate?: () => void;
     onClose?: () => void;
-    innerHTML?: string;
   }>
 ) {
   const [isOpen, setIsOpen] = createSignal(false);
@@ -168,21 +169,11 @@ export function TaskEditor(
   }
 
   return (
-    <Sheet
-      // placement="bottom"
-      // anchorRef={props.anchorRef}
+    <TaskPopup
+      class={props.class}
+      isOpen={isOpen()}
       onOpenChange={handleOpenChange}
-      open={isOpen()}
-    >
-      <SheetTrigger
-        class={classes(styles.taskPopoverTrigger, props.class)}
-        data-priority={props.task.priority}
-        innerHTML={props.innerHTML}
-      >
-        {props.children}
-      </SheetTrigger>
-      <SheetContent class={styles.taskPopover} position="bottom">
-        {/* <KPopover.Arrow /> */}
+      popupContent={
         <TaskForm
           task={props.task}
           setTask={props.setTask}
@@ -190,10 +181,49 @@ export function TaskEditor(
           headerText="Details"
           submitText="Save"
         />
-      </SheetContent>
-      {/* <Show when={isOpen()}>
-        <div class={styles.taskPopOverCover} />
-      </Show> */}
-    </Sheet>
+      }
+    >
+      {props.children}
+    </TaskPopup>
+  );
+}
+
+export function TaskPopup(
+  props: ParentProps<{
+    class?: string;
+
+    isOpen?: boolean;
+    onOpenChange?: (isOpen: boolean) => void;
+
+    popupContent?: JSX.Element;
+  }>
+) {
+  const isDesktop = useIsDesktop();
+
+  return (
+    <>
+      <Show when={isDesktop()}>
+        <Popover
+          placement="bottom"
+          onOpenChange={props.onOpenChange}
+          open={props.isOpen}
+        >
+          <PopoverTrigger class={props.class}>{props.children}</PopoverTrigger>
+          <PopoverContent class={styles.taskPopover}>
+            <KPopover.Arrow />
+            {props.popupContent}
+          </PopoverContent>
+        </Popover>
+      </Show>
+
+      <Show when={!isDesktop()}>
+        <Sheet onOpenChange={props.onOpenChange} open={props.isOpen}>
+          <SheetTrigger class={props.class}>{props.children}</SheetTrigger>
+          <SheetContent class={styles.taskSheet} position="bottom">
+            {props.popupContent}
+          </SheetContent>
+        </Sheet>
+      </Show>
+    </>
   );
 }

@@ -5,6 +5,7 @@ import styles from "./task.module.scss";
 
 import { TaskEditor } from "./taskCreator/taskCreator";
 
+import { Button } from "./ui/button";
 import { Checkbox } from "./ui/checkbox";
 
 import InfoIcon from "~/assets/icons/info.svg?raw";
@@ -141,9 +142,9 @@ export function Task(props: {
           class={classes(
             styles.task,
             isDeleting() && styles.deleting,
-            styles[`task-size-${props.size}`]
+            styles[`task-size-${props.size}`],
+            styles[`task-priority${task().priority}`]
           )}
-          data-priority={props.task.priority}
         >
           <Checkbox
             class={styles.checkbox}
@@ -181,13 +182,13 @@ export function Task(props: {
           <span class={styles.spoons}>{task().spoons}</span>
 
           <TaskEditor
-            class={classes()}
             task={task()}
             setTask={setTask}
             onUpdate={handleSaveIfDirty}
             onClose={handleSaveIfDirty}
-            innerHTML={MoreIcon}
-          />
+          >
+            <Button variant="ghost" size="icon" innerHTML={MoreIcon} />
+          </TaskEditor>
         </div>
       </Show>
 
@@ -196,7 +197,8 @@ export function Task(props: {
           class={classes(
             styles.task,
             isDeleting() && styles.deleting,
-            styles[`task-size-${props.size}`]
+            styles[`task-size-${props.size}`],
+            styles[`task-priority${task().priority}`]
           )}
           task={task()}
           setTask={setTask}

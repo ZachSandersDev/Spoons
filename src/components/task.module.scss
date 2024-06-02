@@ -7,37 +7,31 @@
   flex: 1;
 
   border-radius: var(--radius);
-  padding: var(--spacing);
+  padding: var(--spacing-half) var(--spacing);
 
-  &[data-priority="0"] {
-    background-color: var(--priority-top-color);
-    color: var(--priority-text);
-    svg {
-      fill: var(--priority-text);
-    }
-  }
-
-  &[data-priority="1"] {
-    background-color: var(--priority-normal-color);
-    color: var(--priority-text);
-    svg {
-      fill: var(--priority-text);
-    }
-  }
-
-  &[data-priority="2"] {
-    background-color: var(--priority-low-color);
-    color: var(--priority-text);
-    svg {
-      fill: var(--priority-text);
-    }
+  svg {
+    fill: var(--priority-text);
   }
 }
 
+.task-priority0 {
+  background-color: var(--priority-top-color);
+  color: var(--priority-text);
+}
+
+.task-priority1 {
+  background-color: var(--priority-normal-color);
+  color: var(--priority-text);
+}
+
+.task-priority2 {
+  background-color: var(--priority-low-color);
+  color: var(--priority-text);
+}
+
 .task-size-medium {
-  --spacing: 4px;
-  --spacing-2: 6px;
   word-break: break-all;
+  padding: var(--spacing-half);
 
   .title {
     font-size: 1em;
@@ -45,9 +39,9 @@
 }
 
 .task-size-small {
-  --spacing: 4px;
-  --spacing-2: 6px;
   word-break: break-all;
+  border-radius: var(--radius-small);
+  padding: var(--spacing-quarter);
 
   .title {
     font-size: 1em;
@@ -107,7 +101,6 @@
   svg {
     width: 1.2em;
     height: 1.2em;
-    fill: var(--text-color);
   }
 }
 
