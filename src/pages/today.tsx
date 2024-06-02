@@ -8,6 +8,7 @@ import styles from "./today.module.css";
 import AddIcon from "~/assets/icons/add.svg?raw";
 import MoreIcon from "~/assets/icons/more.svg?raw";
 import { Menu, MenuItem } from "~/components/menu";
+import { Page } from "~/components/Page";
 import { PageHeader } from "~/components/pageHeader";
 import { RangeSelector } from "~/components/rangeSelector";
 import { SecondaryMessage } from "~/components/secondaryMessage/secondaryMessage";
@@ -106,7 +107,7 @@ export default function Today() {
   };
 
   return (
-    <>
+    <Page>
       <PageHeader title="Today">
         <Menu
           trigger={<Button variant="ghost" size="icon" innerHTML={MoreIcon} />}
@@ -169,6 +170,6 @@ export default function Today() {
           />
         </SecondaryMessage>
       </Show>
-    </>
+    </Page>
   );
 }

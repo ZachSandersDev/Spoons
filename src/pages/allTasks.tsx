@@ -3,6 +3,7 @@ import { Show } from "solid-js";
 import { TaskCreator } from "../components/taskCreator/taskCreator";
 
 import AddIcon from "~/assets/icons/add.svg?raw";
+import { Page } from "~/components/Page";
 import { PageHeader } from "~/components/pageHeader";
 import { SecondaryMessage } from "~/components/secondaryMessage/secondaryMessage";
 import { TaskList } from "~/components/taskList";
@@ -13,7 +14,7 @@ export default function AllTasks() {
   const tasks = createAllTasksQuery();
 
   return (
-    <>
+    <Page>
       <PageHeader title="All Tasks">
         <TaskCreator>
           <Button variant="ghost" size="icon" innerHTML={AddIcon} />
@@ -27,6 +28,6 @@ export default function AllTasks() {
       </Show>
 
       <TaskList tasks={tasks.data} />
-    </>
+    </Page>
   );
 }

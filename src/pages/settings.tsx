@@ -4,6 +4,7 @@ import { Profile } from "./calendar/nav/profile";
 import styles from "./settings.module.css";
 
 import { DarkModeToggle } from "~/components/DarkModeToggle";
+import { Page } from "~/components/Page";
 import { PageHeader } from "~/components/pageHeader";
 
 import { Button } from "~/components/ui/button";
@@ -58,7 +59,7 @@ export default function SettingsPage() {
   }
 
   return (
-    <>
+    <Page>
       <PageHeader title="Settings">
         <DarkModeToggle />
       </PageHeader>
@@ -66,8 +67,6 @@ export default function SettingsPage() {
         <div class={styles.profileBanner}>
           <Profile />
         </div>
-
-        {/* <h2>Preferences</h2> */}
 
         <div class={styles.field}>
           <Label for="name">Your spoons per day goal</Label>
@@ -81,8 +80,6 @@ export default function SettingsPage() {
         </div>
 
         <Separator />
-
-        {/* <h2>Actions</h2> */}
 
         <Button
           class={styles.settingsButton}
@@ -102,6 +99,6 @@ export default function SettingsPage() {
           {user() ? "Logout" : "Login"}
         </Button>
       </section>
-    </>
+    </Page>
   );
 }
