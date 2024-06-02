@@ -35,9 +35,11 @@ function A(props: {
   );
 }
 
-export function AppNav() {
+export function AppNav(props: { class?: string }) {
   return (
-    <nav class={styles.appNav}>
+    <nav class={classes(styles.appNav, props.class)}>
+      <h1 class={styles.title}>Spoons</h1>
+
       <A class={styles.navLink} activeClass={styles.activeLink} href="/">
         <span innerHTML={CalTodayIcon} />
         Today
@@ -48,7 +50,7 @@ export function AppNav() {
         href="/all-tasks"
       >
         <span innerHTML={TasksIcon} />
-        Tasks
+        All Tasks
       </A>
       <A
         class={styles.navLink}

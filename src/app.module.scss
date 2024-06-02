@@ -1,0 +1,28 @@
+.main {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr min-content;
+  grid-template-areas: "content" "nav";
+
+  overflow: hidden;
+  flex: 1;
+
+  @media (min-width: 768px) {
+    grid-template-columns: min-content 1fr;
+    grid-template-rows: 1fr;
+    grid-template-areas: "nav content";
+  }
+}
+
+.content {
+  grid-area: content;
+
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
+  flex: 1;
+}
+
+.nav {
+  grid-area: nav;
+}

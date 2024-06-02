@@ -1,7 +1,7 @@
 import { QueryClientProvider } from "@tanstack/solid-query";
 import { ParentProps, Show } from "solid-js";
 
-import styles from "./app.module.css";
+import styles from "./app.module.scss";
 import { AppNav } from "./components/appNav";
 import { createDbListener } from "./lib/api/db";
 import { createNotificationListener } from "./lib/api/notifications";
@@ -19,10 +19,11 @@ export function App(props: ParentProps) {
   return (
     <QueryClientProvider client={queryClient}>
       <main class={styles.main}>
-        {/* <h1 class={styles.title}>Spoons</h1> */}
-        <div class={styles.content}>{props.children}</div>
+        <section class={styles.content} id="content">
+          {props.children}
+        </section>
         <Show when={location() !== "/login" && location() !== "/tutorial"}>
-          <AppNav />
+          <AppNav class={styles.nav} />
         </Show>
       </main>
     </QueryClientProvider>
