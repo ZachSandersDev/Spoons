@@ -30,7 +30,6 @@
 }
 
 .task-size-medium {
-  word-break: break-all;
   padding: var(--spacing-half);
 
   .title {
@@ -42,6 +41,10 @@
   word-break: break-all;
   border-radius: var(--radius-small);
   padding: var(--spacing-quarter);
+
+  @media (min-width: 768px) {
+    padding: var(--spacing-half);
+  }
 
   .title {
     font-size: 1em;

@@ -36,12 +36,7 @@ export function TaskForm(props: TaskFormProps) {
       <header class={styles.formHeader}>
         <h2 class={styles.headerText}>{props.headerText}</h2>
 
-        <Button
-          class={styles.submitButton}
-          size="sm"
-          variant="secondary"
-          type="submit"
-        >
+        <Button class={styles.submitButton} size="sm" type="submit">
           {props.submitText || "Create Task"}
         </Button>
       </header>

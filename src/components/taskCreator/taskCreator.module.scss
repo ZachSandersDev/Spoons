@@ -60,7 +60,7 @@
 
 .spoonOptionSelected-1 {
   background-color: var(--priority-low-color) !important;
-  color: var(--priority-text);
+  color: var(--priority-text) !important;
 }
 
 .spoonOptionSelected-2 {
@@ -69,12 +69,12 @@
     var(--priority-normal-color) 50%,
     var(--priority-low-color)
   ) !important;
-  color: var(--priority-text);
+  color: var(--priority-text) !important;
 }
 
 .spoonOptionSelected-3 {
   background-color: var(--priority-normal-color) !important;
-  color: var(--priority-text);
+  color: var(--priority-text) !important;
 }
 
 .spoonOptionSelected-4 {
@@ -83,25 +83,25 @@
     var(--priority-normal-color) 50%,
     var(--priority-top-color)
   ) !important;
-  color: var(--priority-text);
+  color: var(--priority-text) !important;
 }
 
 .spoonOptionSelected-5 {
   background-color: var(--priority-top-color) !important;
-  color: var(--priority-text);
+  color: var(--priority-text) !important;
 }
 
 .priorityOptionSelected-0 {
   background-color: var(--priority-top-color) !important;
-  color: var(--priority-text);
+  color: var(--priority-text) !important;
 }
 
 .priorityOptionSelected-1 {
   background-color: var(--priority-normal-color) !important;
-  color: var(--priority-text);
+  color: var(--priority-text) !important;
 }
 
 .priorityOptionSelected-2 {
   background-color: var(--priority-low-color) !important;
-  color: var(--priority-text);
+  color: var(--priority-text) !important;
 }
