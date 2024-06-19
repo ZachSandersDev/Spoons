@@ -17,12 +17,7 @@ import { classes, dateTimeFrom } from "~/lib/utils";
 export function Task(props: {
   task: TaskEvent;
   size: "small" | "medium" | "large";
-
-  onUpdate?: (task: TaskEvent) => void;
-  onDelete?: (task: TaskEvent) => void;
-  onNewTask?: (task: TaskEvent) => void;
-
-  focused?: boolean;
+  onComplete?: (task: TaskEvent) => void;
 }) {
   const db = useDb();
   const [task, setTask] = createSignal<TaskEvent>(props.task);
@@ -77,23 +72,49 @@ export function Task(props: {
     return [date, time].filter(Boolean).join(" at ");
   });
 
-  const [isDeleting, setIsDeleting] = createSignal(false);
-
-  function handleCheckboxChange(checked: boolean) {
-    setTask({ ...task(), pending: !checked });
-    setIsDeleting(checked);
-  }
-
-  let deleteTimeout: NodeJS.Timeout;
+  let deleteTimeout: NodeJS.Timeout | undefined;
   createEffect(() => {
-    if (!isDeleting()) {
+    // Remove timeout if the task is not completed
+    if (!task().completed) {
       clearTimeout(deleteTimeout);
+      deleteTimeout = undefined;
+      return;
+    }
+
+    // Don't start a new timeout if one is already running
+    if (deleteTimeout) {
       return;
     }
 
     deleteTimeout = setTimeout(() => {
+      const cTask = task();
+      if (cTask.repeat?.unit) {
+        const now = DateTime.now();
+        const nextAssignedTime = now.plus({
+          [cTask.repeat.unit]: cTask.repeat.frequency || 1,
+        });
+
+        setTask({
+          ...cTask,
+          completed: false,
+          targetDate: nextAssignedTime.toFormat("yyyy-MM-dd"),
+        });
+
+        // Only set a time if there's already a target time, or if the repeat unit is hours
+        if (cTask.targetTime || cTask.repeat?.unit === "hours") {
+          setTask({
+            ...task(),
+            targetTime: nextAssignedTime.toFormat("HH:mm"),
+          });
+        }
+
+        props.onComplete?.(task());
+        handleSaveIfDirty();
+        return;
+      }
+
       db().deleteTask(task());
-      props.onDelete?.(task());
+      props.onComplete?.(task());
     }, 2_000);
   });
 
@@ -106,8 +127,7 @@ export function Task(props: {
       return;
     }
 
-    db().updateTask(task());
-    props.onUpdate?.(task());
+    db().updateTask(JSON.parse(JSON.stringify(task())));
   }
 
   function handleTitleChange(e: { currentTarget: HTMLSpanElement }) {
@@ -121,19 +141,7 @@ export function Task(props: {
     if (e.key === "Enter") {
       e.preventDefault();
     }
-
-    if (e.key === "Backspace" && e.currentTarget.innerText.length === 0) {
-      db().deleteTask(task());
-      props.onDelete?.(task());
-    }
   }
-
-  let titleInput: HTMLSpanElement;
-  createEffect(() => {
-    if (props.focused && titleInput) {
-      titleInput.focus();
-    }
-  });
 
   return (
     <>
@@ -141,22 +149,25 @@ export function Task(props: {
         <div
           class={classes(
             styles.task,
-            isDeleting() && styles.deleting,
+            task().completed && styles.deleting,
             styles[`task-size-${props.size}`],
             styles[`task-priority${task().priority}`]
           )}
         >
           <Checkbox
             class={styles.checkbox}
+            checked={task().completed}
             onClick={(e: MouseEvent) => e.stopPropagation()}
-            onChange={handleCheckboxChange}
+            onChange={(completed) => {
+              setTask({ ...task(), completed });
+              handleSaveIfDirty();
+            }}
           />
 
           <div class={styles.taskDescription}>
             <span
               contentEditable
               class={styles.titleInput}
-              ref={(e) => (titleInput = e)}
               onBlur={handleTitleChange}
               onKeyDown={handleTitleKeyPress}
             >
@@ -196,7 +207,7 @@ export function Task(props: {
         <TaskEditor
           class={classes(
             styles.task,
-            isDeleting() && styles.deleting,
+            task().completed && styles.deleting,
             styles[`task-size-${props.size}`],
             styles[`task-priority${task().priority}`]
           )}

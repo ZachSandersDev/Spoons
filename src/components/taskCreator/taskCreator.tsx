@@ -53,6 +53,10 @@ export function TaskForm(props: TaskFormProps) {
       </div>
 
       <div class={styles.taskField}>
+        <DatePicker task={props.task} setTask={props.setTask} />
+      </div>
+
+      <div class={styles.taskField}>
         <Label>Spoons needed</Label>
         <RangeSelector
           value={props.task.spoons}
@@ -62,11 +66,6 @@ export function TaskForm(props: TaskFormProps) {
           onChange={(value) => props.setTask({ ...props.task, spoons: value })}
           selectedClass={styles[`spoonOptionSelected-${props.task.spoons}`]}
         />
-      </div>
-
-      <div class={styles.taskField}>
-        <Label for="task-targetDate">Scheduled for</Label>
-        <DatePicker task={props.task} setTask={props.setTask} />
       </div>
 
       <div class={styles.taskField}>

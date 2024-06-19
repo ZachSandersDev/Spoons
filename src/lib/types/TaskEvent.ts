@@ -3,6 +3,7 @@ import { v4 as uuidv4 } from "uuid";
 export interface TaskEvent {
   id: string;
   title: string;
+  completed: boolean;
 
   /** Target date for getting the task done */
   targetDate: string;
@@ -15,7 +16,14 @@ export interface TaskEvent {
 
   priority: number;
   createdAt: number;
+
+  repeat?: {
+    frequency?: number;
+    unit?: RepeatUnit;
+  };
 }
+
+export type RepeatUnit = "hours" | "days" | "weeks" | "months" | "years";
 
 export function newTaskEvent(initial?: Partial<TaskEvent>): TaskEvent {
   return {
@@ -23,6 +31,7 @@ export function newTaskEvent(initial?: Partial<TaskEvent>): TaskEvent {
     title: "",
     targetDate: "",
     targetTime: "",
+    completed: false,
     spoons: 1,
     priority: 2,
     createdAt: Date.now(),

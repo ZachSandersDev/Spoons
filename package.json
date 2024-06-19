@@ -17,7 +17,7 @@
     "@capacitor/core": "^6.0.0",
     "@capacitor/ios": "^6.0.0",
     "@capacitor/local-notifications": "^6.0.0",
-    "@kobalte/core": "^0.13.2",
+    "@kobalte/core": "^0.13.3",
     "@tanstack/solid-query": "^5.38.0",
     "@tanstack/solid-virtual": "^3.5.0",
     "class-variance-authority": "^0.7.0",

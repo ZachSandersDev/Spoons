@@ -30,8 +30,8 @@ const SelectTrigger = <T extends ValidComponent = "button">(
       {...others}
     >
       {local.children}
-      <SelectPrimitive.Icon>
-        <svg
+      {/* <SelectPrimitive.Icon> */}
+      {/* <svg
           xmlns="http://www.w3.org/2000/svg"
           width="24"
           height="24"
@@ -44,8 +44,8 @@ const SelectTrigger = <T extends ValidComponent = "button">(
           class="size-4 opacity-50"
         >
           <path d="M6 9l6 6l6 -6" />
-        </svg>
-      </SelectPrimitive.Icon>
+        </svg> */}
+      {/* </SelectPrimitive.Icon> */}
     </SelectPrimitive.Trigger>
   );
 };

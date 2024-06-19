@@ -1,4 +1,4 @@
-import { For, Show, createSignal } from "solid-js";
+import { For, Show } from "solid-js";
 
 import styles from "./taskList.module.scss";
 
@@ -20,11 +20,6 @@ export function TaskList(props: {
     props.onTaskComplete?.(task);
   }
 
-  const [taskToFocus, setTaskToFocus] = createSignal<string | null>(null);
-  function handleTaskWasCreated(task: TaskEvent) {
-    setTaskToFocus(task.id);
-  }
-
   return (
     <>
       <Show when={props.isLoading}>
@@ -39,13 +34,7 @@ export function TaskList(props: {
         <For each={props.tasks}>
           {(task) => (
             <li>
-              <Task
-                task={task}
-                size={size()}
-                onDelete={handleTaskDelete}
-                onNewTask={handleTaskWasCreated}
-                focused={task.id === taskToFocus()}
-              />
+              <Task task={task} size={size()} onComplete={handleTaskDelete} />
             </li>
           )}
         </For>
