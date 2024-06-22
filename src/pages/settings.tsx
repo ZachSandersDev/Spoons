@@ -1,6 +1,7 @@
 import { signOut } from "firebase/auth";
 
-import { Profile } from "./calendar/nav/profile";
+import { Profile } from "../components/profile";
+
 import styles from "./settings.module.css";
 
 import { DarkModeToggle } from "~/components/DarkModeToggle";
