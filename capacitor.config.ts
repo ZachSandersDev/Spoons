@@ -15,6 +15,9 @@ const config: CapacitorConfig = {
       providers: ["google.com"],
     },
   },
+  server: {
+    url: "https://spoons.zachsanders.dev",
+  },
 };
 
 export default config;
