@@ -92,6 +92,8 @@ export function TaskCreator(
     class?: string;
     preview?: (task: TaskEvent | null) => JSX.Element;
     onNewTask?: (task: TaskEvent) => void;
+
+    initialTask?: Partial<TaskEvent>;
   }>
 ) {
   const db = useDb();
@@ -106,7 +108,7 @@ export function TaskCreator(
       return;
     }
 
-    setTask(newTaskEvent());
+    setTask({ ...newTaskEvent(), ...props.initialTask });
   }
 
   async function handleSubmit() {
@@ -122,6 +124,7 @@ export function TaskCreator(
       <TaskPopup
         isOpen={isOpen()}
         onOpenChange={handleOpenChange}
+        class={props.class}
         popupContent={
           <Show when={task()}>
             <TaskForm
