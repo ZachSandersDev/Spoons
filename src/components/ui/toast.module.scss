@@ -1,0 +1,12 @@
+.toolbarToastContainer {
+  width: 50vw;
+  right: 0;
+
+  @media (max-width: 768px) {
+    bottom: calc(env(safe-area-inset-bottom) + 150px);
+  }
+}
+
+.toastContainer {
+  top: env(safe-area-inset-top);
+}
