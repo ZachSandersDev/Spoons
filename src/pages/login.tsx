@@ -1,68 +1,61 @@
-import { FirebaseAuthentication } from "@capacitor-firebase/authentication";
-import {
-  signInWithEmailAndPassword,
-  GoogleAuthProvider,
-  createUserWithEmailAndPassword,
-  signInWithCredential,
-} from "@firebase/auth";
-
-import { signInAnonymously } from "firebase/auth";
-import { Show, createSignal } from "solid-js";
+import { Show, createEffect, createSignal } from "solid-js";
 
 import styles from "./login.module.scss";
 
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 
-import { auth } from "~/lib/api/firebase";
+import { Toaster, showToastPromise } from "~/components/ui/toast";
+import {
+  loginWithEmailAndPassword,
+  loginAnonymously,
+  loginWithGoogle,
+  registerWithEmailAndPassword,
+} from "~/lib/api/auth";
 
 type Mode = "Login" | "Register";
 
 export default function LoginPage() {
-  const [error, setError] = createSignal<string | null>(null);
+  const [promise, setPromise] = createSignal<Promise<void> | null>(null);
 
-  const handleGoogleLogin = async () => {
-    const result = await FirebaseAuthentication.signInWithGoogle();
-    if (!result) {
-      setError("Google sign in failed");
+  createEffect(() => {
+    const prom = promise();
+    if (!prom) {
       return;
     }
 
-    const credential = GoogleAuthProvider.credential(
-      result.credential?.idToken
-    );
-
-    await signInWithCredential(auth, credential);
-  };
-
-  const handleAnonymousLogin = async () => {
-    await signInAnonymously(auth);
-  };
+    showToastPromise(prom, {
+      loading: "Logging in...",
+      success: () => "Logged in!",
+      error: (error) => `Error: '${error?.message || "Unknown error"}'`,
+    });
+  });
 
   const [mode, setMode] = createSignal<Mode>("Register");
   const [email, setEmail] = createSignal("");
   const [password, setPassword] = createSignal("");
 
+  const handleGoogleLogin = async () => {
+    setPromise(loginWithGoogle());
+  };
+
+  const handleAnonymousLogin = async () => {
+    setPromise(loginAnonymously());
+  };
+
   const handleLogin = async (e: Event) => {
     e.preventDefault();
 
     if (mode() === "Register") {
-      try {
-        await createUserWithEmailAndPassword(auth, email(), password());
-      } catch (error) {
-        console.error(error);
-      }
-
+      setPromise(registerWithEmailAndPassword(email(), password()));
       return;
     }
 
-    signInWithEmailAndPassword(auth, email(), password());
+    setPromise(loginWithEmailAndPassword(email(), password()));
   };
 
   return (
     <section class={`view ${styles.loginPage}`}>
-      <span>{error()}</span>
-
       <form class={styles.loginForm} onSubmit={handleLogin}>
         <Input
           type="text"
@@ -113,6 +106,8 @@ export default function LoginPage() {
           </a>
         </span>
       </Show>
+
+      <Toaster />
     </section>
   );
 }

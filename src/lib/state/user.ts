@@ -11,6 +11,8 @@ export const [isLoginCheckComplete, setIsLoginCheckComplete] =
   createSignal(false);
 export const [user, setUser] = createSignal<User | null>(null);
 
+export const [googleAccessToken, setGoogleAccessToken] = createSignal<string>();
+
 export function createLoginListener() {
   auth.onAuthStateChanged((firebaseUser) => {
     setUser(firebaseUser);
@@ -36,9 +38,24 @@ export function createLoginListener() {
     // If the user logged in, the tutorial is complete
     setTutorialComplete();
 
+    // Snag the user's Google access token if available
+    setGoogleAccessToken(
+      localStorage.getItem("googleAccessToken") || undefined
+    );
+
     // Navigate to the home page if the user is logged in
     if (location() === "/tutorial" || location() === "/login") {
       setLocation("/");
     }
+  });
+
+  // Make sure to cache the user's Google access token in local storage
+  createEffect(() => {
+    const token = googleAccessToken();
+    if (!token) {
+      return;
+    }
+
+    localStorage.setItem("googleAccessToken", token);
   });
 }
