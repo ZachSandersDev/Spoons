@@ -1,0 +1,11 @@
+.icon {
+  svg {
+    fill: hsl(var(--foreground));
+  }
+}
+
+.iconPrimary {
+  svg {
+    fill: hsl(var(--primary-foreground));
+  }
+}
