@@ -27,7 +27,8 @@ export default function LoginPage() {
     showToastPromise(prom, {
       loading: "Logging in...",
       success: () => "Logged in!",
-      error: (error) => `Error: '${error?.message || "Unknown error"}'`,
+      error: (error?: { message?: string }) =>
+        `Error: '${error?.message || "Unknown error"}'`,
     });
   });
 
