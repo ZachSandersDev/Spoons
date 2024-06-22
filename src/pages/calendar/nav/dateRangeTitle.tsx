@@ -1,52 +1,23 @@
 import { DateTime } from "luxon";
 import { Match, Switch } from "solid-js";
 
-import { mode } from "~/pages/calendar/calendarPage";
+import { Mode } from "../types";
+import { getRange } from "../utils";
 
 const MONTH_DAY = "MMM dd";
 const MONTH_DAY_YEAR = "MMM dd, yyyy";
 const MONTH_YEAR = "MMM yyyy";
 const DAY_YEAR = "dd, yyyy";
 
-export function DateRangeTitle(props: { currentDate: DateTime }) {
-  const currentDate = () => props.currentDate;
-
-  const currentDateRange = () => {
-    const currentMode = mode();
-
-    if (currentMode === "3day") {
-      return {
-        startDate: currentDate(),
-        endDate: currentDate().endOf("day").plus({ days: 2 }),
-      };
-    }
-
-    if (currentMode === "week") {
-      return {
-        startDate: currentDate(),
-        endDate: currentDate()
-          .plus({ days: 1 })
-          .endOf("week")
-          .plus({ days: -1 }),
-      };
-    }
-
-    return {
-      startDate: currentDate(),
-      endDate: currentDate().endOf("month"),
-    };
-  };
+export function DateRangeTitle(props: { mode: Mode; currentDate: DateTime }) {
+  const currentDateRange = () => getRange(props.mode, props.currentDate);
 
   return (
     <>
       <Switch>
-        <Match when={mode() === "month"}>
+        <Match when={props.mode === "month"}>
           {currentDateRange().startDate.toFormat(MONTH_YEAR)}
         </Match>
-
-        {/* <Match when={mode() === "day"}>
-          {currentDateRange().startDate.toFormat(MONTH_DAY_YEAR)}
-        </Match> */}
 
         <Match
           when={

@@ -1,11 +1,107 @@
+.weekView {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
 .weekContainer {
   display: flex;
   justify-content: space-between;
   font-size: 0.8em;
-  flex: 1;
   overflow: hidden;
 
   hr:last-child {
     display: none;
+  }
+}
+
+.taskContainer,
+.calendarContainer {
+  display: grid;
+}
+
+.taskContainer {
+  border-bottom: 1px solid hsl(var(--border));
+  background-color: hsl(var(--muted));
+  position: sticky;
+  top: 0;
+}
+
+.calendarContainer {
+  flex: 1;
+}
+
+.taskIndicatorSpacer {
+  border-right: 1px solid hsl(var(--border));
+}
+
+$subDivision: 4;
+$calendarResolution: calc(24 * $subDivision);
+$hourHeightDesktop: 50px;
+$hourHeightMobile: 40px;
+
+.calendarDay {
+  display: grid;
+  grid-template-rows: repeat(
+    $calendarResolution,
+    calc(#{$hourHeightDesktop} / #{$subDivision})
+  );
+  padding: 0 var(--spacing-half);
+  column-gap: var(--spacing-quarter);
+  row-gap: var(--spacing-half);
+
+  &:not(:last-child) {
+    border-right: 1px solid hsl(var(--border));
+  }
+
+  @media (max-width: 768px) {
+    grid-template-rows: repeat(
+      $calendarResolution,
+      calc(#{$hourHeightMobile} / #{$subDivision})
+    );
+  }
+}
+
+.indicatorContainer {
+  display: grid;
+  grid-template-rows: repeat(24, $hourHeightDesktop);
+  row-gap: calc(var(--spacing-half) * 4);
+  border-right: 1px solid hsl(var(--border));
+
+  @media (max-width: 768px) {
+    grid-template-rows: repeat(24, $hourHeightMobile);
+  }
+}
+
+.indicator {
+  white-space: nowrap;
+
+  display: flex;
+  align-items: center;
+
+  width: 100vw;
+
+  position: relative;
+  transform: translateX(5ch);
+  z-index: -1;
+
+  span {
+    font-size: 0.8em;
+    position: absolute;
+    top: calc(-0.75em - var(--spacing-2));
+    left: -5.5ch;
+  }
+
+  &:not(:last-child) {
+    border-bottom: 1px solid var(--border-light);
+  }
+
+  @media (max-width: 768px) {
+    transform: translateX(3ch);
+    span {
+      left: -3.25ch;
+    }
   }
 }

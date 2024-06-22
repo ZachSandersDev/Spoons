@@ -1,6 +1,6 @@
 import { DateTime } from "luxon";
 
-import { ParentProps } from "solid-js";
+import { Component, ParentProps, Show } from "solid-js";
 
 import styles from "./dayCell.module.scss";
 
@@ -10,7 +10,9 @@ export function DayCell(
   props: ParentProps<{
     day: DateTime;
     class?: string;
+    classList?: Record<string, boolean>;
     size?: "small" | "medium" | "large";
+    indicatorContainer?: Component;
   }>
 ) {
   const day = () => props.day;
@@ -25,25 +27,38 @@ export function DayCell(
       return day().toLocaleString({ day: "numeric" });
     }
 
-    return day().toFormat("EEE<br/>d");
+    return day().toFormat("EEE d");
   };
 
   return (
     <div
-      class={classes(
-        styles.dayCell,
-        styles[`dayCell-size-${props.size}`],
-        props.class
-      )}
+      class={props.class}
+      classList={{
+        [styles.dayCell]: true,
+        [styles[`dayCell-size-${props.size}`]]: true,
+        ...(props.classList || {}),
+      }}
     >
-      <span
-        class={classes(
-          styles.dateIndicator,
-          isToday() && styles.dateIndicatorToday
-        )}
-        innerHTML={dateIndicator()}
-      />
-
+      <Show when={props.indicatorContainer}>
+        {/* @ts-expect-error It's a component, but ts doesn't think so... */}
+        <props.indicatorContainer
+          class={classes(
+            styles.dateIndicator,
+            isToday() && styles.dateIndicatorToday
+          )}
+        >
+          <span innerHTML={dateIndicator()} />
+        </props.indicatorContainer>
+      </Show>
+      <Show when={!props.indicatorContainer}>
+        <span
+          class={classes(
+            styles.dateIndicator,
+            isToday() && styles.dateIndicatorToday
+          )}
+          innerHTML={dateIndicator()}
+        />
+      </Show>
       {props.children}
     </div>
   );

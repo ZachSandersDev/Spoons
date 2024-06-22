@@ -1,36 +1,18 @@
-import styles from "./modeSelect.module.css";
+import { Mode } from "../types";
 
-import {
-  Select,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-  SelectContent,
-} from "~/components/ui/select";
-
-import { type Mode, mode, setMode } from "~/pages/calendar/calendarPage";
-
-export function ModeSelect() {
-  const modeText: Record<Mode, string> = {
-    month: "Month",
-    week: "Week",
-    "3day": "3-Day",
-  };
-
+export function ModeSelect(props: {
+  mode: Mode;
+  setMode: (mode: Mode) => void;
+}) {
   return (
-    <Select<Mode>
-      options={["month", "week", "3day"]}
-      value={mode()}
-      onChange={setMode}
-      itemComponent={({ item }) => (
-        <SelectItem item={item}>{modeText[item.rawValue]}</SelectItem>
-      )}
+    <select
+      class="flex h-10 w-full items-center justify-between rounded-md border border-input bg-transparent px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+      value={props.mode}
+      onChange={(e) => props.setMode(e.target.value as Mode)}
     >
-      <SelectTrigger class={styles.modeSelect}>
-        <SelectValue>{modeText[mode()]}</SelectValue>
-      </SelectTrigger>
-
-      <SelectContent />
-    </Select>
+      <option value="month">Month</option>
+      <option value="week">Week</option>
+      <option value="3day">3-Day</option>
+    </select>
   );
 }

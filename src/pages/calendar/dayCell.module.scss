@@ -5,17 +5,22 @@
   gap: var(--spacing);
 
   padding: var(--spacing-half);
-
+  overflow: hidden;
   flex: 1;
+
+  &:not(:last-child) {
+    border-right: 1px solid hsl(var(--border));
+  }
 }
 
 .dayCell-size-small {
   padding: 0 var(--spacing-quarter);
-  gap: var(--spacing-half);
+  gap: var(--spacing-quarter);
 }
 
 .dateIndicator {
   text-align: center;
+  font-size: 0.8em;
 }
 
 .dateIndicatorToday {

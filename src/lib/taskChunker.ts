@@ -7,7 +7,11 @@ export interface TaskChunk {
   tasks: TaskEvent[];
 }
 
-export function chunkTasks(tasks: TaskEvent[], chunkSize: number) {
+export function chunkTasks(
+  tasks: TaskEvent[],
+  chunkSize: number,
+  { preserveLateTasks = false }: { preserveLateTasks?: boolean } = {}
+) {
   const tasksByDay: Record<number, TaskChunk | undefined> = {};
 
   const tasksWithDates = tasks.filter((t) => !!t.targetDate);
@@ -22,7 +26,7 @@ export function chunkTasks(tasks: TaskEvent[], chunkSize: number) {
 
     // For tasks that are scheduled in the past, but aren't done
     // consider them to be unscheduled, top priority tasks
-    if (dateOffset < 0) {
+    if (!preserveLateTasks && dateOffset < 0) {
       tasksWithoutDates.unshift(task);
       continue;
     }

@@ -1,7 +1,5 @@
-.modeSelect {
+.calendarNavigation {
   display: flex;
   align-items: center;
   gap: var(--spacing);
-
-  width: 13ch;
 }

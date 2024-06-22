@@ -38,16 +38,16 @@
 }
 
 .task-size-small {
-  word-break: break-all;
   border-radius: var(--radius-small);
   padding: var(--spacing-quarter);
+  overflow: hidden;
 
   @media (min-width: 768px) {
     padding: var(--spacing-half);
   }
 
   .title {
-    font-size: 1em;
+    font-size: 0.8em;
   }
 }
 

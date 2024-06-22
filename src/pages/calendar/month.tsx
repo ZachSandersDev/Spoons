@@ -1,19 +1,22 @@
 import { DateTime } from "luxon";
 import { For, Show, createMemo } from "solid-js";
 
+import { CalendarEventItem } from "./calendarEventItem";
 import { DayCell } from "./dayCell";
 import styles from "./month.module.scss";
 
 import { TaskList } from "~/components/taskList";
 import { createPreferencesQuery } from "~/lib/api/db";
 import { chunkTasks } from "~/lib/taskChunker";
+import { CalendarEvent } from "~/lib/types/Calendars";
 import { TaskEvent } from "~/lib/types/TaskEvent";
-import { classes } from "~/lib/utils";
 
 export function MonthView(props: {
   tasks?: TaskEvent[];
   isLoading?: boolean;
   startingDate: DateTime;
+  allDayCalendarEvents?: Map<string, CalendarEvent[]>;
+  timedCalendarEvents?: Map<string, CalendarEvent[]>;
 }) {
   const prefs = createPreferencesQuery();
 
@@ -46,6 +49,15 @@ export function MonthView(props: {
               const offsetFromToday = () =>
                 Math.floor(day().diff(today(), "days").days);
 
+              const calendarEvents = () => [
+                ...(props.allDayCalendarEvents?.get(
+                  day().toFormat("yyyy-MM-dd")
+                ) || []),
+                ...(props.timedCalendarEvents?.get(
+                  day().toFormat("yyyy-MM-dd")
+                ) || []),
+              ];
+
               return (
                 <Show
                   when={
@@ -60,11 +72,13 @@ export function MonthView(props: {
                   }
                 >
                   <DayCell
-                    class={classes(
-                      styles.monthCell,
-                      !props.startingDate.hasSame(day(), "month") &&
-                        styles.monthCellNotInMonth
-                    )}
+                    classList={{
+                      [styles.monthCell]: true,
+                      [styles.monthCellNotInMonth]: !props.startingDate.hasSame(
+                        day(),
+                        "month"
+                      ),
+                    }}
                     day={day()}
                     size="small"
                   >
@@ -73,6 +87,12 @@ export function MonthView(props: {
                       isLoading={props.isLoading}
                       size="small"
                     />
+
+                    <For each={calendarEvents()}>
+                      {(event) => (
+                        <CalendarEventItem event={event} size="small" />
+                      )}
+                    </For>
                   </DayCell>
                 </Show>
               );
