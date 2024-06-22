@@ -7,20 +7,28 @@ import styles from "./today.module.css";
 
 import AddIcon from "~/assets/icons/add.svg?raw";
 import MoreIcon from "~/assets/icons/more.svg?raw";
-import { Menu, MenuItem } from "~/components/menu";
+import { Icon } from "~/components/Icon";
 import { Page } from "~/components/Page";
 import { PageHeader } from "~/components/pageHeader";
 import { RangeSelector } from "~/components/rangeSelector";
 import { SecondaryMessage } from "~/components/secondaryMessage/secondaryMessage";
 import { TaskList } from "~/components/taskList";
+import { ToolBar } from "~/components/ToolBar";
 import { Button } from "~/components/ui/button";
 
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "~/components/ui/dropdown-menu";
 import {
   createDayProgressQuery,
   createPreferencesQuery,
   createTodayTasksQuery,
   useDb,
 } from "~/lib/api/db";
+import { createMediaQuery } from "~/lib/createMediaQuery";
 import { chunkTasks } from "~/lib/taskChunker";
 import { DayProgress } from "~/lib/types/DayProgress";
 import { TaskEvent } from "~/lib/types/TaskEvent";
@@ -28,6 +36,7 @@ import { TaskEvent } from "~/lib/types/TaskEvent";
 const DEFAULT_CAPACITY = 5;
 
 export default function Today() {
+  const isMobile = createMediaQuery("(max-width: 768px)");
   const db = useDb();
 
   const todayString = DateTime.now().toFormat("yyyy-MM-dd");
@@ -84,45 +93,12 @@ export default function Today() {
     db().dayProgress.setDayProgress(newDayProg);
   };
 
-  const resetProgress = async () => {
-    if (!dayProgress.data) return;
-
-    const newDayProg: DayProgress = {
-      ...dayProgress.data,
-      spoonsCompleted: 0,
-    };
-
-    db().dayProgress.setDayProgress(newDayProg);
-  };
-
-  const resetTarget = async () => {
-    if (!dayProgress.data) return;
-
-    const newDayProg: DayProgress = {
-      ...dayProgress.data,
-      spoonTarget: userGoal(),
-    };
-
-    db().dayProgress.setDayProgress(newDayProg);
-  };
-
   return (
     <Page>
       <PageHeader title="Today">
-        <Menu
-          trigger={<Button variant="ghost" size="icon" innerHTML={MoreIcon} />}
-        >
-          <MenuItem onClick={resetProgress}>
-            Reset today&rsquo;s progress
-          </MenuItem>
-          <MenuItem onClick={resetTarget}>
-            Reset today&rsquo;s added spoons
-          </MenuItem>
-        </Menu>
-
-        <TaskCreator>
-          <Button variant="ghost" size="icon" innerHTML={AddIcon} />
-        </TaskCreator>
+        <Show when={!isMobile()}>
+          <TodayTools dayProgress={dayProgress.data} userGoal={userGoal()} />
+        </Show>
       </PageHeader>
 
       <TaskList
@@ -170,6 +146,69 @@ export default function Today() {
           />
         </SecondaryMessage>
       </Show>
+
+      <Show when={isMobile()}>
+        <ToolBar>
+          <TodayTools dayProgress={dayProgress.data} userGoal={userGoal()} />
+        </ToolBar>
+      </Show>
     </Page>
+  );
+}
+
+function TodayTools(props: { dayProgress?: DayProgress; userGoal: number }) {
+  const isMobile = createMediaQuery("(max-width: 768px)");
+  const db = useDb();
+
+  const resetProgress = async () => {
+    if (!props.dayProgress) return;
+
+    const newDayProg: DayProgress = {
+      ...props.dayProgress,
+      spoonsCompleted: 0,
+    };
+
+    db().dayProgress.setDayProgress(newDayProg);
+  };
+
+  const resetTarget = async () => {
+    if (!props.dayProgress) return;
+
+    const newDayProg: DayProgress = {
+      ...props.dayProgress,
+      spoonTarget: props.userGoal,
+    };
+
+    db().dayProgress.setDayProgress(newDayProg);
+  };
+
+  return (
+    <>
+      <DropdownMenu placement={isMobile() ? "top" : "bottom-end"}>
+        <DropdownMenuTrigger>
+          <Button variant="ghost" size="icon" innerHTML={MoreIcon} />
+        </DropdownMenuTrigger>
+        <DropdownMenuContent>
+          <DropdownMenuItem onClick={resetProgress}>
+            Reset today&rsquo;s progress
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={resetTarget}>
+            Reset today&rsquo;s added spoons
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+
+      <TaskCreator>
+        <Show when={isMobile()}>
+          <Button>
+            <Icon variant="primary" innerHTML={AddIcon} />
+            New task
+          </Button>
+        </Show>
+        <Show when={!isMobile()}>
+          <Button variant="ghost" size="icon" innerHTML={AddIcon} />
+        </Show>
+      </TaskCreator>
+    </>
   );
 }
