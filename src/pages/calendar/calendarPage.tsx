@@ -9,7 +9,7 @@ import { DateRangeTitle } from "./nav/dateRangeTitle";
 import { ModeSelect } from "./nav/modeSelect";
 
 import { Mode } from "./types";
-import { getRange } from "./utils";
+import { getEventDateMap, getRange } from "./utils";
 import { WeekView } from "./week";
 
 import { PageHeader } from "~/components/pageHeader";
@@ -20,7 +20,6 @@ import { loginWithGoogle } from "~/lib/api/auth";
 import { createAllTasksQuery } from "~/lib/api/db";
 import { getAllCalendarEvents } from "~/lib/api/google";
 import { googleAccessToken } from "~/lib/state/user";
-import { CalendarEvent } from "~/lib/types/Calendars";
 import { useIsDesktop } from "~/lib/utils";
 
 export default function CalendarPage() {
@@ -46,7 +45,7 @@ export default function CalendarPage() {
     retry: false,
   }));
 
-  createEffect(() => {
+  createEffect((wasLoadingPreviously?: boolean) => {
     if (!googleAccessToken()) {
       return;
     }
@@ -55,9 +54,10 @@ export default function CalendarPage() {
       showToast({
         title: "Loading calendar events...",
       });
+      return true;
     }
 
-    if (calendarEventsQuery.isSuccess) {
+    if (calendarEventsQuery.isSuccess && wasLoadingPreviously) {
       showToast({
         title: "Loaded calendar events!",
       });
@@ -72,142 +72,18 @@ export default function CalendarPage() {
         ),
       });
     }
-  });
-
-  // createEffect(() => {
-  //   if (calendarEventsQuery.error) {
-  //     showToast({
-  //       title: "Error",
-  //       description:
-  //         "Could not load calendar events, please grant access again",
-  //       action: (
-  //         <Button
-  //           onClick={async () => {
-  //             const result = await FirebaseAuthentication.signInWithGoogle({
-  //               scopes: [
-  //                 "https://www.googleapis.com/auth/calendar.events.readonly",
-  //                 "https://www.googleapis.com/auth/calendar.readonly",
-  //               ],
-  //             });
-
-  //             if (!result) {
-  //               showToast({ description: "Google sign in failed..." });
-  //               return;
-  //             }
-
-  //             const credential = GoogleAuthProvider.credential(
-  //               result.credential?.idToken
-  //             );
-
-  //             if (result.credential?.accessToken) {
-  //               localStorage.setItem(
-  //                 "googleIdToken",
-  //                 result.credential.accessToken
-  //               );
-  //             }
-
-  //             await signInWithCredential(auth, credential);
-  //           }}
-  //         >
-  //           Authorize Google Calendar
-  //         </Button>
-  //       ),
-  //     });
-  //   }
-  // });
+  }, false);
 
   const allDayCalendarEvents = () => {
-    const eventsMap = new Map<string, CalendarEvent[]>();
     const events = calendarEventsQuery.data ?? [];
-    const allDayEvents = events.filter(
-      (event) => !!event.start && !event.start.dateTime
-    );
-
-    for (const event of allDayEvents) {
-      const startDate = DateTime.fromISO(event.start.date ?? "");
-      const endDate = DateTime.fromISO(event.end.date ?? "");
-
-      for (
-        let i = 0;
-        Math.floor(startDate.plus({ days: i }).diff(endDate, "days").days) < 0;
-        i++
-      ) {
-        const currentDate = startDate.plus({ days: i });
-        const remainingDays = Math.floor(
-          endDate.diff(currentDate, "days").days
-        );
-
-        const date = currentDate.toFormat("yyyy-MM-dd");
-        const existingEvents = eventsMap.get(date) ?? [];
-
-        const clonedEvent = { ...event };
-
-        if (i !== 0 && clonedEvent.start.date) {
-          clonedEvent.end = {
-            date: currentDate.plus({ days: 1 }).toISODate()!,
-            timeZone: clonedEvent.end.timeZone,
-          };
-        }
-
-        if (remainingDays > 0 && clonedEvent.end.date) {
-          clonedEvent.end = {
-            date: currentDate.endOf("day").toISODate()!,
-            timeZone: clonedEvent.end.timeZone,
-          };
-        }
-
-        existingEvents.push(clonedEvent);
-        eventsMap.set(date, existingEvents);
-      }
-    }
-
-    return eventsMap;
+    const allDayEvents = events.filter((event) => !!event.start?.date);
+    return getEventDateMap(allDayEvents);
   };
 
   const timedCalendarEvents = () => {
-    const eventsMap = new Map<string, CalendarEvent[]>();
     const events = calendarEventsQuery.data ?? [];
     const timedEvents = events.filter((event) => !!event.start?.dateTime);
-
-    for (const event of timedEvents) {
-      const startDate = DateTime.fromISO(event.start.dateTime ?? "");
-      const endDate = DateTime.fromISO(event.end.dateTime ?? "");
-
-      for (
-        let i = 0;
-        Math.floor(startDate.plus({ days: i }).diff(endDate, "days").days) < 0;
-        i++
-      ) {
-        const currentDate = startDate.plus({ days: i });
-        const remainingDays = Math.floor(
-          endDate.diff(currentDate, "days").days
-        );
-
-        const date = currentDate.toFormat("yyyy-MM-dd");
-        const existingEvents = eventsMap.get(date) ?? [];
-
-        const clonedEvent = { ...event };
-
-        if (i !== 0 && clonedEvent.start.dateTime) {
-          clonedEvent.start = {
-            dateTime: currentDate.toISO()!,
-            timeZone: clonedEvent.start.timeZone,
-          };
-        }
-
-        if (remainingDays > 0 && clonedEvent.end.dateTime) {
-          clonedEvent.end = {
-            dateTime: currentDate.endOf("day").toISO()!,
-            timeZone: clonedEvent.end.timeZone,
-          };
-        }
-
-        existingEvents.push(clonedEvent);
-        eventsMap.set(date, existingEvents);
-      }
-    }
-
-    return eventsMap;
+    return getEventDateMap(timedEvents);
   };
 
   return (
