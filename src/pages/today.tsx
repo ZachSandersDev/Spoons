@@ -28,15 +28,15 @@ import {
   createTodayTasksQuery,
   useDb,
 } from "~/lib/api/db";
-import { createMediaQuery } from "~/lib/createMediaQuery";
 import { chunkTasks } from "~/lib/taskChunker";
 import { DayProgress } from "~/lib/types/DayProgress";
 import { TaskEvent } from "~/lib/types/TaskEvent";
+import { useIsDesktop } from "~/lib/utils";
 
 const DEFAULT_CAPACITY = 5;
 
 export default function Today() {
-  const isMobile = createMediaQuery("(max-width: 768px)");
+  const isDesktop = useIsDesktop();
   const db = useDb();
 
   const todayString = DateTime.now().toFormat("yyyy-MM-dd");
@@ -96,7 +96,7 @@ export default function Today() {
   return (
     <Page>
       <PageHeader title="Today">
-        <Show when={!isMobile()}>
+        <Show when={isDesktop()}>
           <TodayTools dayProgress={dayProgress.data} userGoal={userGoal()} />
         </Show>
       </PageHeader>
@@ -147,7 +147,7 @@ export default function Today() {
         </SecondaryMessage>
       </Show>
 
-      <Show when={isMobile()}>
+      <Show when={!isDesktop()}>
         <ToolBar>
           <TodayTools dayProgress={dayProgress.data} userGoal={userGoal()} />
         </ToolBar>
@@ -157,7 +157,7 @@ export default function Today() {
 }
 
 function TodayTools(props: { dayProgress?: DayProgress; userGoal: number }) {
-  const isMobile = createMediaQuery("(max-width: 768px)");
+  const isDesktop = useIsDesktop();
   const db = useDb();
 
   const resetProgress = async () => {
@@ -184,7 +184,7 @@ function TodayTools(props: { dayProgress?: DayProgress; userGoal: number }) {
 
   return (
     <>
-      <DropdownMenu placement={isMobile() ? "top" : "bottom-end"}>
+      <DropdownMenu placement={!isDesktop() ? "top" : "bottom-end"}>
         <DropdownMenuTrigger>
           <Button variant="ghost" size="icon" innerHTML={MoreIcon} />
         </DropdownMenuTrigger>
@@ -199,13 +199,13 @@ function TodayTools(props: { dayProgress?: DayProgress; userGoal: number }) {
       </DropdownMenu>
 
       <TaskCreator>
-        <Show when={isMobile()}>
+        <Show when={!isDesktop()}>
           <Button>
             <Icon variant="primary" innerHTML={AddIcon} />
             New task
           </Button>
         </Show>
-        <Show when={!isMobile()}>
+        <Show when={isDesktop()}>
           <Button variant="ghost" size="icon" innerHTML={AddIcon} />
         </Show>
       </TaskCreator>

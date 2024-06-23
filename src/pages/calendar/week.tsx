@@ -8,10 +8,10 @@ import styles from "./week.module.scss";
 import { TaskCreator } from "~/components/taskCreator/taskCreator";
 import { TaskList } from "~/components/taskList";
 import { createPreferencesQuery } from "~/lib/api/db";
-import { createMediaQuery } from "~/lib/createMediaQuery";
 import { chunkTasks } from "~/lib/taskChunker";
 import { CalendarEvent } from "~/lib/types/Calendars";
 import { TaskEvent } from "~/lib/types/TaskEvent";
+import { useIsDesktop } from "~/lib/utils";
 
 export function WeekView(props: {
   startingDate: DateTime;
@@ -22,7 +22,7 @@ export function WeekView(props: {
   mutateTasks?: (mutator: (tasks: TaskEvent[]) => TaskEvent[]) => void;
   isLoading?: boolean;
 }) {
-  const isMobile = createMediaQuery("(max-width: 768px)");
+  const isDesktop = useIsDesktop();
   const dateOffsets = () => new Array(props.numDays).fill(0).map((_, i) => i);
   const today = () => DateTime.now().startOf("day");
 
@@ -41,7 +41,7 @@ export function WeekView(props: {
       <div
         class={styles.taskContainer}
         style={{
-          "grid-template-columns": isMobile()
+          "grid-template-columns": !isDesktop()
             ? `3ch repeat(${props.numDays}, 1fr)`
             : `5ch repeat(${props.numDays}, 1fr)`,
         }}
@@ -98,7 +98,7 @@ export function WeekView(props: {
       <div
         class={styles.calendarContainer}
         style={{
-          "grid-template-columns": isMobile()
+          "grid-template-columns": !isDesktop()
             ? `3ch repeat(${props.numDays}, 1fr)`
             : `5ch repeat(${props.numDays}, 1fr)`,
         }}
@@ -112,13 +112,13 @@ export function WeekView(props: {
 
               return (
                 <div class={styles.indicator}>
-                  <Show when={isMobile()}>
+                  <Show when={!isDesktop()}>
                     <span>
                       {i === 12 || i === 0 ? "12" : i % 12}
                       {i > 11 ? "p" : "a"}
                     </span>
                   </Show>
-                  <Show when={!isMobile()}>
+                  <Show when={isDesktop()}>
                     <span>
                       {i === 12 || i === 0 ? "12" : i % 12}{" "}
                       {i > 11 ? "PM" : "AM"}

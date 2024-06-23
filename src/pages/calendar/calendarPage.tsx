@@ -19,15 +19,15 @@ import { Toaster, showToast } from "~/components/ui/toast";
 import { loginWithGoogle } from "~/lib/api/auth";
 import { createAllTasksQuery } from "~/lib/api/db";
 import { getAllCalendarEvents } from "~/lib/api/google";
-import { createMediaQuery } from "~/lib/createMediaQuery";
 import { googleAccessToken } from "~/lib/state/user";
 import { CalendarEvent } from "~/lib/types/Calendars";
+import { useIsDesktop } from "~/lib/utils";
 
 export default function CalendarPage() {
   const tasks = createAllTasksQuery();
-  const isMobile = createMediaQuery("(max-width: 768px)");
+  const isDesktop = useIsDesktop();
 
-  const [mode, setMode] = createSignal<Mode>(isMobile() ? "3day" : "week");
+  const [mode, setMode] = createSignal<Mode>(!isDesktop() ? "3day" : "week");
   const [currentDate, setCurrentDate] = createSignal<DateTime>(DateTime.now());
   const range = () => getRange(mode(), currentDate());
 
@@ -213,7 +213,7 @@ export default function CalendarPage() {
   return (
     <>
       <PageHeader title={"Planning"}>
-        <Show when={!isMobile()}>
+        <Show when={isDesktop()}>
           <CalendarNavigation
             mode={mode()}
             currentDate={currentDate()}
@@ -222,7 +222,7 @@ export default function CalendarPage() {
           <ModeSelect mode={mode()} setMode={setMode} />
         </Show>
 
-        <Show when={isMobile()}>
+        <Show when={!isDesktop()}>
           <h2 class={styles.dateRange}>
             <DateRangeTitle mode={mode()} currentDate={currentDate()} />
           </h2>
@@ -250,7 +250,7 @@ export default function CalendarPage() {
 
       <Toaster variant="toolbar" />
 
-      <Show when={isMobile()}>
+      <Show when={!isDesktop()}>
         <ToolBar>
           <ModeSelect mode={mode()} setMode={setMode} />
 

@@ -11,16 +11,16 @@ import { TaskList } from "~/components/taskList";
 import { ToolBar } from "~/components/ToolBar";
 import { Button } from "~/components/ui/button";
 import { createAllTasksQuery } from "~/lib/api/db";
-import { createMediaQuery } from "~/lib/createMediaQuery";
+import { useIsDesktop } from "~/lib/utils";
 
 export default function AllTasks() {
-  const isMobile = createMediaQuery("(max-width: 768px)");
+  const isDesktop = useIsDesktop();
   const tasks = createAllTasksQuery();
 
   return (
     <Page>
       <PageHeader title="All Tasks">
-        <Show when={!isMobile()}>
+        <Show when={isDesktop()}>
           <AllTasksTools />
         </Show>
       </PageHeader>
@@ -33,7 +33,7 @@ export default function AllTasks() {
 
       <TaskList tasks={tasks.data} />
 
-      <Show when={isMobile()}>
+      <Show when={!isDesktop()}>
         <ToolBar>
           <AllTasksTools />
         </ToolBar>
@@ -43,16 +43,16 @@ export default function AllTasks() {
 }
 
 function AllTasksTools() {
-  const isMobile = createMediaQuery("(max-width: 768px)");
+  const isDesktop = useIsDesktop();
 
   return (
     <>
-      <Show when={!isMobile()}>
+      <Show when={isDesktop()}>
         <TaskCreator>
           <Button variant="ghost" size="icon" innerHTML={AddIcon} />
         </TaskCreator>
       </Show>
-      <Show when={isMobile()}>
+      <Show when={!isDesktop()}>
         <TaskCreator>
           <Button>
             <Icon variant="primary" innerHTML={AddIcon} />
