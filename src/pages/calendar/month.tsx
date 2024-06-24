@@ -5,6 +5,7 @@ import { CalendarEventItem } from "./calendarEventItem";
 import { DayCell } from "./dayCell";
 import styles from "./month.module.scss";
 
+import { TaskCreator } from "~/components/taskCreator/taskCreator";
 import { TaskList } from "~/components/taskList";
 import { createPreferencesQuery } from "~/lib/api/db";
 import { chunkTasks } from "~/lib/taskChunker";
@@ -81,6 +82,14 @@ export function MonthView(props: {
                     }}
                     day={day()}
                     size="small"
+                    indicatorContainer={(props) => (
+                      <TaskCreator
+                        initialTask={{
+                          targetDate: day().toFormat("yyyy-MM-dd"),
+                        }}
+                        {...props}
+                      />
+                    )}
                   >
                     <TaskList
                       tasks={taskChunks()[offsetFromToday()]?.tasks}
