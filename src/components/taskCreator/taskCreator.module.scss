@@ -51,13 +51,6 @@
   width: 100%;
 }
 
-.formHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-}
-
 .spoonOptionSelected-1 {
   background-color: var(--priority-low-color) !important;
   color: var(--priority-text) !important;
@@ -104,4 +97,12 @@
 .priorityOptionSelected-2 {
   background-color: var(--priority-low-color) !important;
   color: var(--priority-text) !important;
+}
+
+.formActions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: var(--spacing);
+  width: 100%;
 }

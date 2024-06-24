@@ -2,10 +2,12 @@ import { Popover as KPopover } from "@kobalte/core/popover";
 import { JSX, ParentProps, Show, createSignal } from "solid-js";
 
 import { RangeSelector } from "../rangeSelector";
+
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { Sheet, SheetContent, SheetTrigger } from "../ui/sheet";
 
 import { DatePicker } from "./datePicker";
+import { RepeatPicker } from "./repeatPicker";
 import styles from "./taskCreator.module.scss";
 
 import { Button } from "~/components/ui/button";
@@ -33,15 +35,8 @@ export function TaskForm(props: TaskFormProps) {
 
   return (
     <form class={styles.taskForm} onSubmit={handleSubmit}>
-      <header class={styles.formHeader}>
-        <h2 class={styles.headerText}>{props.headerText}</h2>
-
-        <Button class={styles.submitButton} size="sm" type="submit">
-          {props.submitText || "Create Task"}
-        </Button>
-      </header>
-
       <div class={styles.taskField}>
+        <Label>Task Name</Label>
         <Input
           id="task-title"
           placeholder="Task"
@@ -53,8 +48,11 @@ export function TaskForm(props: TaskFormProps) {
       </div>
 
       <div class={styles.taskField}>
+        <Label>Date and Time</Label>
         <DatePicker task={props.task} setTask={props.setTask} />
       </div>
+
+      <RepeatPicker task={props.task} setTask={props.setTask} />
 
       <div class={styles.taskField}>
         <Label>Spoons needed</Label>
@@ -82,6 +80,12 @@ export function TaskForm(props: TaskFormProps) {
             styles[`priorityOptionSelected-${props.task.priority}`]
           }
         />
+      </div>
+
+      <div class={styles.formActions}>
+        <Button class={styles.submitButton} size="sm" type="submit">
+          {props.submitText || "Create Task"}
+        </Button>
       </div>
     </form>
   );

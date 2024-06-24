@@ -1,6 +1,12 @@
 /* eslint-disable indent */
-import { For } from "solid-js";
+import { For, Show } from "solid-js";
 
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "../ui/accordion";
 import { Label } from "../ui/label";
 
 import styles from "./repeatPicker.module.scss";
@@ -55,83 +61,100 @@ function getUnitDisplayText(amount: number, unit: RepeatUnit) {
 
 export function RepeatPicker(props: RepeatPickerProps) {
   return (
-    <div class={styles.repeatPicker}>
-      <Label for="repeat-unit">Frequency</Label>
+    <Show when={props.task.targetDate || props.task.targetTime}>
+      <Accordion class={styles.repeatPickerAccordion} multiple collapsible>
+        <AccordionItem value="repeat">
+          <AccordionTrigger>Repeat</AccordionTrigger>
+          <AccordionContent>
+            <div class={styles.repeatPicker}>
+              <Label for="repeat-unit">Frequency</Label>
 
-      <select
-        id="repeat-unit"
-        class={styles.selector}
-        value={props.task?.repeat?.unit || ""}
-        onChange={(e) =>
-          props.setTask({
-            ...props.task,
-            repeat: {
-              ...props.task.repeat,
-              unit: e.target.value as RepeatUnit,
-            },
-          })
-        }
-      >
-        <option value="" selected></option>
-        <For each={["hours", "days", "weeks", "months", "years"] as const}>
-          {(unit) => <option value={unit}>{getUnitSelectorText(unit)}</option>}
-        </For>
-      </select>
+              <select
+                id="repeat-unit"
+                class={styles.selector}
+                value={props.task?.repeat?.unit || ""}
+                onChange={(e) =>
+                  props.setTask({
+                    ...props.task,
+                    repeat: {
+                      ...props.task.repeat,
+                      unit: e.target.value as RepeatUnit,
+                    },
+                  })
+                }
+              >
+                <option value="" selected></option>
+                <For
+                  each={["hours", "days", "weeks", "months", "years"] as const}
+                >
+                  {(unit) => (
+                    <option value={unit}>{getUnitSelectorText(unit)}</option>
+                  )}
+                </For>
+              </select>
 
-      <Button
-        variant="ghost"
-        size="icon"
-        onClick={() =>
-          props.setTask({
-            ...props.task,
-            repeat: {},
-          })
-        }
-        innerHTML={CloseIcon}
-      />
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() =>
+                  props.setTask({
+                    ...props.task,
+                    repeat: {},
+                  })
+                }
+                innerHTML={CloseIcon}
+              />
 
-      <Label for="repeat-frequency">Every</Label>
+              <Label for="repeat-frequency">Every</Label>
 
-      <select
-        class={styles.selector}
-        value={
-          props.task?.repeat?.frequency || (props.task.repeat?.unit ? 1 : 0)
-        }
-        onChange={(e) =>
-          props.setTask({
-            ...props.task,
-            repeat: {
-              ...props.task.repeat,
-              frequency: parseInt(e.target.value),
-            },
-          })
-        }
-      >
-        <For each={new Array(999).fill(1).map((_, i) => i + 1)}>
-          {(frequency) => (
-            <option value={frequency}>
-              {frequency}{" "}
-              {props.task.repeat?.unit &&
-                getUnitDisplayText(frequency, props.task?.repeat?.unit || "")}
-            </option>
-          )}
-        </For>
-      </select>
+              <select
+                class={styles.selector}
+                value={
+                  props.task?.repeat?.frequency ||
+                  (props.task.repeat?.unit ? 1 : 0)
+                }
+                onChange={(e) =>
+                  props.setTask({
+                    ...props.task,
+                    repeat: {
+                      ...props.task.repeat,
+                      frequency: parseInt(e.target.value),
+                    },
+                  })
+                }
+              >
+                <For each={new Array(999).fill(1).map((_, i) => i + 1)}>
+                  {(frequency) => (
+                    <option value={frequency}>
+                      {frequency}{" "}
+                      {props.task.repeat?.unit &&
+                        getUnitDisplayText(
+                          frequency,
+                          props.task?.repeat?.unit || ""
+                        )}
+                    </option>
+                  )}
+                </For>
+              </select>
 
-      <Button
-        variant="ghost"
-        size="icon"
-        onClick={() =>
-          props.setTask({
-            ...props.task,
-            repeat: {
-              ...props.task.repeat,
-              frequency: props.task.repeat?.unit ? 1 : 0,
-            },
-          })
-        }
-        innerHTML={CloseIcon}
-      />
-    </div>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() =>
+                  props.setTask({
+                    ...props.task,
+                    repeat: {
+                      ...props.task.repeat,
+                      frequency: props.task.repeat?.unit ? 1 : 0,
+                    },
+                  })
+                }
+                innerHTML={CloseIcon}
+              />
+            </div>
+          </AccordionContent>
+        </AccordionItem>
+      </Accordion>
+    </Show>
   );
 }
