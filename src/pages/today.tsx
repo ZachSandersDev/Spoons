@@ -109,18 +109,15 @@ export default function Today() {
 
       <div class={styles.stats}>
         <Show when={spoonsCompleted()}>
-          <span>{spoonsCompleted()} complete!</span>
+          <span>{spoonsCompleted()} complete</span>
         </Show>
+
+        <span>/</span>
+
         <Show when={remainingSpoons() > 0}>
           <span>{remainingSpoons()} remaining</span>
         </Show>
       </div>
-
-      <Show when={!todayTasks.isLoading && !hasTasks()}>
-        <SecondaryMessage>
-          <p>Task list empty!</p>
-        </SecondaryMessage>
-      </Show>
 
       <Show
         when={
