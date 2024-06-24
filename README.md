@@ -1,28 +1,17 @@
-## Usage
+# Spoons
 
-```bash
-$ npm install # or pnpm install or yarn install
-```
+> Spoons is an app I made for my partner!
 
-### Learn more on the [Solid Website](https://solidjs.com) and come chat with us on our [Discord](https://discord.com/invite/solidjs)
+## Context 
 
-## Available Scripts
+It's based on the *spoons theory* that's used to help neuro-diverse people manage and understand their energy capacity. 
 
-In the project directory, you can run:
+Every task requires a certain number of "spoons". Some days you'll have more spoons available, some days you'll have less. And everyone has a different capacity for getting things done throughout the day.
 
-### `npm run dev`
+Whether it's emotional, physical or mental, everyone has limits on what they can resonably do in a day.
 
-Runs the app in the development mode.<br>
-Open [http://localhost:5173](http://localhost:5173) to view it in the browser.
+## How Spoons addresses this
 
-### `npm run build`
+Spoons is a task app like any other, except it *limits how many tasks you can see by default*. You can set a base number of points you expect to be able to complete in a day, and Spoons will only show you the tasks that will fit in that limit.
 
-Builds the app for production to the `dist` folder.<br>
-It correctly bundles Solid in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!
-
-## Deployment
-
-Learn more about deploying your application with the [documentations](https://vitejs.dev/guide/static-deploy.html)
+If you fill your spoons goal for the day, you're free to add more capacity if you're feeling productive! Or, you can rest easy having accomplished your goal.
