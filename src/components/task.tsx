@@ -143,6 +143,10 @@ export function Task(props: {
     }
   }
 
+  async function handleDelete() {
+    db().deleteTask(task());
+  }
+
   return (
     <>
       <Show when={props.size === "large"}>
@@ -197,6 +201,7 @@ export function Task(props: {
             setTask={setTask}
             onUpdate={handleSaveIfDirty}
             onClose={handleSaveIfDirty}
+            onDelete={handleDelete}
           >
             <Button variant="ghost" size="icon" innerHTML={MoreIcon} />
           </TaskEditor>
@@ -215,6 +220,7 @@ export function Task(props: {
           setTask={setTask}
           onUpdate={handleSaveIfDirty}
           onClose={handleSaveIfDirty}
+          onDelete={handleDelete}
         >
           <div class={styles.taskDescription}>
             <span class={styles.title}>{task().title}</span>

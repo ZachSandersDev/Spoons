@@ -10,6 +10,8 @@ import { DatePicker } from "./datePicker";
 import { RepeatPicker } from "./repeatPicker";
 import styles from "./taskCreator.module.scss";
 
+import { TaskDeleteDialog } from "./taskDeleteDialog";
+
 import { Button } from "~/components/ui/button";
 
 import { Input } from "~/components/ui/input";
@@ -27,7 +29,7 @@ export type TaskFormProps = {
   submitText?: string;
 };
 
-export function TaskForm(props: TaskFormProps) {
+export function TaskForm(props: ParentProps<TaskFormProps>) {
   function handleSubmit(e: SubmitEvent) {
     e.preventDefault();
     props.onSubmit();
@@ -83,6 +85,8 @@ export function TaskForm(props: TaskFormProps) {
       </div>
 
       <div class={styles.formActions}>
+        {props.children}
+
         <Button class={styles.submitButton} size="sm" type="submit">
           {props.submitText || "Create Task"}
         </Button>
@@ -155,6 +159,7 @@ export function TaskEditor(
     setTask: (task: TaskEvent) => void;
     onUpdate?: () => void;
     onClose?: () => void;
+    onDelete?: () => void;
   }>
 ) {
   const [isOpen, setIsOpen] = createSignal(false);
@@ -169,6 +174,11 @@ export function TaskEditor(
     props.onUpdate?.();
   }
 
+  function handleDelete() {
+    props.onDelete?.();
+    setIsOpen(false);
+  }
+
   return (
     <TaskPopup
       class={props.class}
@@ -181,7 +191,11 @@ export function TaskEditor(
           onSubmit={handleSubmit}
           headerText="Details"
           submitText="Save"
-        />
+        >
+          <TaskDeleteDialog onConfirm={handleDelete}>
+            <Button variant="secondary">Delete</Button>
+          </TaskDeleteDialog>
+        </TaskForm>
       }
     >
       {props.children}
