@@ -10,9 +10,11 @@
   padding: var(--spacing-quarter);
   overflow: hidden;
   width: 100%;
+  min-height: calc(1.25ch + var(--spacing-quarter) * 2);
 
   font-weight: 700;
   font-size: 0.8em;
+  line-height: 1;
 
   @media (max-width: 768px) {
     padding: var(--spacing-quarter);

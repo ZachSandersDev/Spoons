@@ -16,9 +16,11 @@ import { PageHeader } from "~/components/pageHeader";
 import { ToolBar } from "~/components/ToolBar";
 import { Button } from "~/components/ui/button";
 import { Toaster, showToast } from "~/components/ui/toast";
-import { loginWithGoogle } from "~/lib/api/auth";
 import { createAllTasksQuery } from "~/lib/api/db";
-import { getAllCalendarEvents } from "~/lib/api/google";
+import {
+  authorizeGoogleCalendar,
+  getAllCalendarEvents,
+} from "~/lib/api/google";
 import { googleAccessToken } from "~/lib/state/user";
 import { useIsDesktop } from "~/lib/utils";
 
@@ -68,7 +70,9 @@ export default function CalendarPage() {
         title: "Could not load calendar events",
         description: calendarEventsQuery.error.message,
         action: (
-          <Button onClick={loginWithGoogle}>Authorize Google Calendar</Button>
+          <Button onClick={authorizeGoogleCalendar}>
+            Authorize Google Calendar
+          </Button>
         ),
       });
     }

@@ -56,7 +56,7 @@ export function WeekView(props: {
             return (
               <DayCell
                 day={day()}
-                size="medium"
+                size={props.numDays > 5 ? "medium" : "large"}
                 indicatorContainer={(props) => (
                   <TaskCreator
                     initialTask={{ targetDate: day().toFormat("yyyy-MM-dd") }}
