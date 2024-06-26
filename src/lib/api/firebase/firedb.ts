@@ -13,6 +13,7 @@ import {
   orderBy,
   query,
   setDoc,
+  updateDoc,
   where,
 } from "firebase/firestore";
 import { DateTime } from "luxon";
@@ -124,6 +125,10 @@ async function setPreferences(preferences: Preferences) {
   await setDoc(preferencesQuery(), stripId(preferences));
 }
 
+async function updatePreferences(preferences: Partial<Preferences>) {
+  await updateDoc(preferencesQuery(), preferences);
+}
+
 function onPreferences(callback: (snapshot: Preferences) => void) {
   return onDocumentChange(
     preferencesQuery,
@@ -169,6 +174,7 @@ export const FireSpoonsDb = {
   updateTask,
   deleteTask,
   setPreferences,
+  updatePreferences,
   getPreferences,
   onPreferences,
 

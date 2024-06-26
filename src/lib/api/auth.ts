@@ -12,12 +12,7 @@ import { setGoogleAccessToken } from "../state/user";
 import { auth } from "./firebase";
 
 export async function loginWithGoogle() {
-  const result = await FirebaseAuthentication.signInWithGoogle({
-    scopes: [
-      "https://www.googleapis.com/auth/calendar.events.readonly",
-      "https://www.googleapis.com/auth/calendar.readonly",
-    ],
-  });
+  const result = await FirebaseAuthentication.signInWithGoogle();
 
   if (!result) {
     throw new Error("Google sign in failed");

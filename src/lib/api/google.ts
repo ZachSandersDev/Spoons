@@ -2,6 +2,8 @@ import { DateTime } from "luxon";
 
 import { googleAccessToken } from "../state/user";
 
+import { FireSpoonsDb } from "./firebase/firedb";
+
 export async function initializeGoogleApiIfNeeded() {
   // If the Google API isn't loaded at all, error
   if (typeof gapi === "undefined") {
@@ -74,4 +76,33 @@ export async function getCalendarEvents(
   });
 
   return events.result.items;
+}
+
+export async function authorizeGoogleCalendar() {
+  await FireSpoonsDb.updatePreferences({
+    googleAuthURL: "client," + window.location.href,
+  });
+
+  const unsubscribe = FireSpoonsDb.onPreferences((prefs) => {
+    if (!prefs.googleAuthURL || prefs.googleAuthURL.startsWith("client,")) {
+      return;
+    }
+
+    unsubscribe();
+    window.open(prefs.googleAuthURL);
+  });
+
+  // const client = google.accounts.oauth2.initCodeClient({
+  //   client_id:
+  //     "325287074111-vtmclq1f4kjnl5jh5nj7p3chh1moa82g.apps.googleusercontent.com",
+  //   scope: "https://www.googleapis.com/auth/calendar.events.readonly",
+  //   access_type: "offline",
+  //   callback: (result) => {
+  //     FireSpoonsDb.updatePreferences({
+  //       googleCalendarAccessCode: result.code,
+  //     });
+  //   },
+  // });
+
+  // client.requestCode();
 }
