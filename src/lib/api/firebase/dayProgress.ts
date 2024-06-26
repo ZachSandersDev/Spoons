@@ -21,10 +21,6 @@ async function deleteDayProgress(date: string) {
   await deleteDoc(dayProgressQuery(date));
 }
 
-function addDayProgress(progress: DayProgress) {
-  return setDayProgress(progress);
-}
-
 function onDayProgress(
   date: string,
   callback: (snapshot: DayProgress) => void
@@ -40,6 +36,5 @@ export const FireDayProgressAPI = {
   getDayProgress,
   setDayProgress,
   deleteDayProgress,
-  addDayProgress,
   onDayProgress,
 };

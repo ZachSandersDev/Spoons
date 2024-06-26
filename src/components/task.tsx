@@ -1,5 +1,11 @@
 import { DateTime } from "luxon";
-import { Show, createEffect, createMemo, createSignal } from "solid-js";
+import {
+  Show,
+  createEffect,
+  createMemo,
+  createSignal,
+  onCleanup,
+} from "solid-js";
 
 import styles from "./task.module.scss";
 
@@ -72,21 +78,22 @@ export function Task(props: {
     return [date, time].filter(Boolean).join(" at ");
   });
 
-  let deleteTimeout: NodeJS.Timeout | undefined;
+  // Create a timeout to delete the task after 2 seconds
+  let deletingTimeout: NodeJS.Timeout | undefined;
   createEffect(() => {
-    // Remove timeout if the task is not completed
-    if (!task().completed) {
-      clearTimeout(deleteTimeout);
-      deleteTimeout = undefined;
+    // Reset the timeout if the task is set back to incomplete
+    if (!task().completed && deletingTimeout !== undefined) {
+      clearTimeout(deletingTimeout);
+      deletingTimeout = undefined;
       return;
     }
 
     // Don't start a new timeout if one is already running
-    if (deleteTimeout) {
+    if (!task().completed || deletingTimeout !== undefined) {
       return;
     }
 
-    deleteTimeout = setTimeout(() => {
+    deletingTimeout = setTimeout(() => {
       const cTask = task();
       if (cTask.repeat?.unit) {
         const now = DateTime.now();
@@ -116,6 +123,11 @@ export function Task(props: {
       db().deleteTask(task());
       props.onComplete?.(task());
     }, 2_000);
+  });
+
+  // Cleanup timeouts when the component is unmounted
+  onCleanup(() => {
+    clearTimeout(deletingTimeout);
   });
 
   function handleSaveIfDirty() {

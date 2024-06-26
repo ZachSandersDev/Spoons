@@ -28,6 +28,7 @@ import {
   createTodayTasksQuery,
   useDb,
 } from "~/lib/api/db";
+import { AsyncTaskQueue } from "~/lib/asyncTaskQueue";
 import { chunkTasks } from "~/lib/taskChunker";
 import { DayProgress } from "~/lib/types/DayProgress";
 import { TaskEvent } from "~/lib/types/TaskEvent";
@@ -64,21 +65,27 @@ export default function Today() {
     return taskChunks[0]?.tasks || [];
   });
 
-  const handleTaskComplete = async (task: TaskEvent) => {
-    const newDayProg: DayProgress = {
-      id: todayString,
-      spoonsCompleted: 0,
-      ...dayProgress.data,
+  const taskCompleteQueue = new AsyncTaskQueue<DayProgress>();
+
+  function updateDayProgress(task: TaskEvent) {
+    return async (newDayProg?: DayProgress) => {
+      if (!newDayProg) {
+        newDayProg = {
+          id: todayString,
+          spoonsCompleted: 0,
+          ...dayProgress.data,
+        };
+      }
+
+      newDayProg.spoonsCompleted! += task.spoons;
+      await db().dayProgress.setDayProgress(newDayProg);
+
+      return newDayProg;
     };
+  }
 
-    newDayProg.spoonsCompleted! += task.spoons;
-
-    if (!dayProgress.data) {
-      db().dayProgress.addDayProgress(newDayProg);
-      return;
-    }
-
-    db().dayProgress.setDayProgress(newDayProg);
+  const handleTaskComplete = async (task: TaskEvent) => {
+    taskCompleteQueue.add(updateDayProgress(task));
   };
 
   const handleAddCapacity = async (numToAdd: number) => {
@@ -101,33 +108,32 @@ export default function Today() {
         </Show>
       </PageHeader>
 
-      <TaskList
-        tasks={tasks()}
-        isLoading={todayTasks.isLoading}
-        onTaskComplete={handleTaskComplete}
-      />
-
       <div class={styles.stats}>
         <Show when={spoonsCompleted()}>
           <span>{spoonsCompleted()} complete</span>
         </Show>
 
-        <span>/</span>
+        <Show when={spoonsCompleted() && remainingSpoons() > 0}>
+          <span>/</span>
+        </Show>
 
         <Show when={remainingSpoons() > 0}>
           <span>{remainingSpoons()} remaining</span>
         </Show>
       </div>
 
-      <Show
-        when={
-          hasTasks() &&
-          (spoonsCompleted() >= capacity() || hasUnreachableTasks())
-        }
-      >
-        <SecondaryMessage>
+      <TaskList
+        tasks={tasks()}
+        isLoading={todayTasks.isLoading}
+        onTaskComplete={handleTaskComplete}
+      />
+
+      <SecondaryMessage>
+        <Show when={spoonsCompleted() >= capacity()}>
           <p>Congrats! You&rsquo;ve reached your goal for today!</p>
-          <p></p>
+        </Show>
+
+        <Show when={hasUnreachableTasks()}>
           <p>
             If you&rsquo;d like to take on more, you can add more spoons to
             today&rsquo;s goal
@@ -141,8 +147,12 @@ export default function Today() {
             }))}
             onChange={handleAddCapacity}
           />
-        </SecondaryMessage>
-      </Show>
+        </Show>
+
+        <Show when={!hasTasks()}>
+          <p>You have no tasks for today.</p>
+        </Show>
+      </SecondaryMessage>
 
       <Show when={!isDesktop()}>
         <ToolBar>
