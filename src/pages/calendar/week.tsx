@@ -71,25 +71,39 @@ export function WeekView(props: {
                     size={props.numDays > 5 ? "small" : "medium"}
                   />
                 </Show>
+              </DayCell>
+            );
+          }}
+        </For>
 
-                <Show
-                  when={
-                    !!props.allDayCalendarEvents?.get(
+        <div
+          classList={{
+            [styles.taskIndicatorSpacer]: true,
+            [styles["taskIndicatorSpacer--allDay"]]: true,
+          }}
+        ></div>
+        <For each={dateOffsets()}>
+          {(dateOffset) => {
+            const day = () => props.startingDate.plus({ days: dateOffset });
+
+            return (
+              <div
+                class={styles.calendarAllDay}
+                style={`${
+                  !props.allDayCalendarEvents?.get(day().toFormat("yyyy-MM-dd"))
+                    ?.length && "padding: 0"
+                }`}
+              >
+                <For
+                  each={
+                    props.allDayCalendarEvents?.get(
                       day().toFormat("yyyy-MM-dd")
-                    )?.length
+                    ) || []
                   }
                 >
-                  <For
-                    each={
-                      props.allDayCalendarEvents?.get(
-                        day().toFormat("yyyy-MM-dd")
-                      ) || []
-                    }
-                  >
-                    {(event) => <CalendarEventItem event={event} />}
-                  </For>
-                </Show>
-              </DayCell>
+                  {(event) => <CalendarEventItem event={event} />}
+                </For>
+              </div>
             );
           }}
         </For>

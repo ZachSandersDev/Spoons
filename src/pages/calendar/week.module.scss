@@ -23,6 +23,8 @@
 }
 
 .taskContainer {
+  grid-template-rows: min-content min-content;
+
   border-bottom: 1px solid hsl(var(--border));
   background-color: hsl(var(--muted));
   position: sticky;
@@ -37,9 +39,14 @@
   border-right: 1px solid hsl(var(--border));
 }
 
+.taskIndicatorSpacer--allDay {
+  border-top: 1px solid hsl(var(--border));
+  background-color: var(--color-background);
+}
+
 $subDivision: 4;
 $calendarResolution: calc(24 * $subDivision);
-$hourHeightDesktop: 30px;
+$hourHeightDesktop: 50px;
 $hourHeightMobile: 40px;
 
 .calendarDay {
@@ -50,7 +57,6 @@ $hourHeightMobile: 40px;
   );
   padding: 0 var(--spacing-half);
   column-gap: var(--spacing-quarter);
-  row-gap: var(--spacing-half);
 
   &:not(:last-child) {
     border-right: 1px solid hsl(var(--border));
@@ -64,10 +70,26 @@ $hourHeightMobile: 40px;
   }
 }
 
+.calendarAllDay {
+  display: flex;
+  flex-direction: column;
+  padding: var(--spacing-half);
+  gap: var(--spacing-half);
+  overflow: hidden;
+
+  border-top: 1px solid hsl(var(--border));
+
+  background-color: var(--color-background);
+
+  &:not(:last-child) {
+    border-right: 1px solid hsl(var(--border));
+  }
+}
+
 .indicatorContainer {
   display: grid;
   grid-template-rows: repeat(24, $hourHeightDesktop);
-  row-gap: calc(var(--spacing-half) * 4);
+
   border-right: 1px solid hsl(var(--border));
 
   @media (max-width: 768px) {
@@ -90,7 +112,7 @@ $hourHeightMobile: 40px;
   span {
     font-size: 0.8em;
     position: absolute;
-    top: calc(-0.75em - var(--spacing-2));
+    top: calc(-0.75em);
     left: -5.5ch;
   }
 

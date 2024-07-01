@@ -3,6 +3,9 @@ export type Preferences = {
   spoonsPerDay?: number;
   notificationsEnabled?: boolean;
 
+  enabledCalendars?: string[];
+
   googleAuthURL?: string;
   googleAuthCode?: string;
+  googleAuthStatus?: "pending" | "success" | "failure";
 };

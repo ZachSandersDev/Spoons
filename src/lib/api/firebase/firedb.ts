@@ -22,6 +22,7 @@ import { user } from "../../state/user";
 import { Preferences } from "../../types/Preferences";
 import { TaskEvent } from "../../types/TaskEvent";
 
+import { FireCalendarsAPI } from "./calendars";
 import { FireDayProgressAPI } from "./dayProgress";
 import { FireType, db, resolveWithIds, stripId } from "./db";
 
@@ -179,4 +180,5 @@ export const FireSpoonsDb = {
   onPreferences,
 
   dayProgress: FireDayProgressAPI,
+  calendars: FireCalendarsAPI,
 };

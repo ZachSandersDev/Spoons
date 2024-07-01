@@ -7,8 +7,6 @@ import {
   signInWithEmailAndPassword,
 } from "firebase/auth";
 
-import { setGoogleAccessToken } from "../state/user";
-
 import { auth } from "./firebase";
 
 export async function loginWithGoogle() {
@@ -19,10 +17,6 @@ export async function loginWithGoogle() {
   }
 
   const credential = GoogleAuthProvider.credential(result.credential?.idToken);
-
-  if (result.credential?.accessToken) {
-    setGoogleAccessToken(result.credential.accessToken);
-  }
 
   await signInWithCredential(auth, credential);
 }

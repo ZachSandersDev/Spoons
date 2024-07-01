@@ -30,24 +30,37 @@
 }
 
 .task-size-medium {
-  padding: var(--spacing-half);
+  padding: var(--spacing-half) var(--spacing);
+  gap: var(--spacing);
 
   .title {
     font-size: 1em;
+  }
+
+  .spoons {
+    font-size: 1em;
+  }
+
+  @media (max-width: 768px) {
+    font-size: 0.8em;
   }
 }
 
 .task-size-small {
   border-radius: var(--radius-small);
-  padding: var(--spacing-quarter);
+  padding: var(--spacing-half);
   overflow: hidden;
-
-  @media (min-width: 768px) {
-    padding: var(--spacing-half);
-  }
+  gap: var(--spacing);
 
   .title {
-    font-size: 0.8em;
+    font-size: 0.9em;
+  }
+
+  @media (max-width: 768px) {
+    padding: var(--spacing-quarter);
+    .title {
+      font-size: 0.8em;
+    }
   }
 }
 

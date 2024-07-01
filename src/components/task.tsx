@@ -7,6 +7,7 @@ import {
   onCleanup,
 } from "solid-js";
 
+import { Icon } from "./Icon";
 import styles from "./task.module.scss";
 
 import { TaskEditor } from "./taskCreator/taskCreator";
@@ -16,6 +17,7 @@ import { Checkbox } from "./ui/checkbox";
 
 import InfoIcon from "~/assets/icons/info.svg?raw";
 import MoreIcon from "~/assets/icons/more.svg?raw";
+import TaskIcon from "~/assets/icons/task.svg?raw";
 import { useDb } from "~/lib/api/db";
 import { TaskEvent } from "~/lib/types/TaskEvent";
 import { classes, dateTimeFrom } from "~/lib/utils";
@@ -234,6 +236,8 @@ export function Task(props: {
           onClose={handleSaveIfDirty}
           onDelete={handleDelete}
         >
+          <Icon innerHTML={TaskIcon} />
+
           <div class={styles.taskDescription}>
             <span class={styles.title}>{task().title}</span>
 

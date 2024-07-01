@@ -3,22 +3,21 @@
   flex-flow: column;
   gap: var(--spacing-quarter);
 
-  border-radius: var(--radius);
-  padding: var(--spacing-half);
-
   border-radius: var(--radius-small);
-  padding: var(--spacing-quarter);
+  padding: var(--spacing-half);
   overflow: hidden;
   width: 100%;
-  min-height: calc(1.25ch + var(--spacing-quarter) * 2);
+  min-height: calc(1.25ch + var(--spacing-half) * 2);
 
   font-weight: 700;
-  font-size: 0.8em;
+  font-size: 0.9em;
   line-height: 1;
 
   @media (max-width: 768px) {
     padding: var(--spacing-quarter);
     gap: var(--spacing-quarter);
+    min-height: calc(1.25ch + var(--spacing-quarter) * 2);
+    font-size: 0.8em;
   }
 }
 

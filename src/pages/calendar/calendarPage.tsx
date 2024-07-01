@@ -1,9 +1,10 @@
 import { createQuery } from "@tanstack/solid-query";
 import { DateTime } from "luxon";
-import { Show, createEffect, createSignal } from "solid-js";
+import { Show, createSignal } from "solid-js";
 
 import styles from "./calendarPage.module.css";
 import { MonthView } from "./month";
+import { CalendarMenu } from "./nav/calendarMenu";
 import { CalendarNavigation } from "./nav/calendarNavigation";
 import { DateRangeTitle } from "./nav/dateRangeTitle";
 import { ModeSelect } from "./nav/modeSelect";
@@ -14,14 +15,9 @@ import { WeekView } from "./week";
 
 import { PageHeader } from "~/components/pageHeader";
 import { ToolBar } from "~/components/ToolBar";
-import { Button } from "~/components/ui/button";
-import { Toaster, showToast } from "~/components/ui/toast";
-import { createAllTasksQuery } from "~/lib/api/db";
-import {
-  authorizeGoogleCalendar,
-  getAllCalendarEvents,
-} from "~/lib/api/google";
-import { googleAccessToken } from "~/lib/state/user";
+import { Toaster } from "~/components/ui/toast";
+import { createAllTasksQuery, createPreferencesQuery } from "~/lib/api/db";
+import { FireSpoonsDb } from "~/lib/api/firebase/firedb";
 import { useIsDesktop } from "~/lib/utils";
 
 export default function CalendarPage() {
@@ -32,51 +28,24 @@ export default function CalendarPage() {
   const [currentDate, setCurrentDate] = createSignal<DateTime>(DateTime.now());
   const range = () => getRange(mode(), currentDate());
 
+  const preferencesQuery = createPreferencesQuery();
+
   const calendarEventsQuery = createQuery(() => ({
     queryKey: [
       "calendarEvents",
-      googleAccessToken(),
       currentDate().startOf("month"),
       currentDate().endOf("month"),
+      preferencesQuery.data?.enabledCalendars ?? undefined,
     ],
     queryFn: () =>
-      getAllCalendarEvents(
+      FireSpoonsDb.calendars.getCalendarEvents(
         currentDate().startOf("month"),
-        currentDate().endOf("month")
+        currentDate().endOf("month"),
+        preferencesQuery.data?.enabledCalendars ?? undefined
       ),
     retry: false,
+    enabled: !!preferencesQuery.isFetched,
   }));
-
-  createEffect((wasLoadingPreviously?: boolean) => {
-    if (!googleAccessToken()) {
-      return;
-    }
-
-    if (calendarEventsQuery.isLoading) {
-      showToast({
-        title: "Loading calendar events...",
-      });
-      return true;
-    }
-
-    if (calendarEventsQuery.isSuccess && wasLoadingPreviously) {
-      showToast({
-        title: "Loaded calendar events!",
-      });
-    }
-
-    if (calendarEventsQuery.error) {
-      showToast({
-        title: "Could not load calendar events",
-        description: calendarEventsQuery.error.message,
-        action: (
-          <Button onClick={authorizeGoogleCalendar}>
-            Authorize Google Calendar
-          </Button>
-        ),
-      });
-    }
-  }, false);
 
   const allDayCalendarEvents = () => {
     const events = calendarEventsQuery.data ?? [];
@@ -100,6 +69,7 @@ export default function CalendarPage() {
             setCurrentDate={setCurrentDate}
           />
           <ModeSelect mode={mode()} setMode={setMode} />
+          <CalendarMenu />
         </Show>
 
         <Show when={!isDesktop()}>

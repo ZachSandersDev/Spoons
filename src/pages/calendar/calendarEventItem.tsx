@@ -21,9 +21,10 @@ export function CalendarEventItem(props: {
       class={styles.calendarEvent}
       classList={{
         [styles[`calendarEvent--${props.event.colorId || "default"}`]]: true,
+        [styles[`calendarEvent--${props.size || "small"}`]]: true,
       }}
       style={{
-        "grid-row": `${startingRow} / span ${rowDiff}`,
+        "grid-row": `${startingRow + 1} / span ${rowDiff}`,
       }}
     >
       {/* <i class={styles.calendarEventIcon} innerHTML={CalendarIcon} /> */}
