@@ -128,31 +128,33 @@ export default function Today() {
         onTaskComplete={handleTaskComplete}
       />
 
-      <SecondaryMessage>
-        <Show when={spoonsCompleted() >= capacity()}>
-          <p>Congrats! You&rsquo;ve reached your goal for today!</p>
-        </Show>
+      <Show when={!todayTasks.isLoading}>
+        <SecondaryMessage>
+          <Show when={spoonsCompleted() >= capacity()}>
+            <p>Congrats! You&rsquo;ve reached your goal for today!</p>
+          </Show>
 
-        <Show when={hasUnreachableTasks()}>
-          <p>
-            If you&rsquo;d like to take on more, you can add more spoons to
-            today&rsquo;s goal
-          </p>
+          <Show when={hasUnreachableTasks()}>
+            <p>
+              If you&rsquo;d like to take on more, you can add more spoons to
+              today&rsquo;s goal
+            </p>
 
-          <RangeSelector
-            value={0}
-            options={new Array(5).fill(0).map((_, i) => ({
-              value: i + 1,
-              label: `${i + 1}`,
-            }))}
-            onChange={handleAddCapacity}
-          />
-        </Show>
+            <RangeSelector
+              value={0}
+              options={new Array(5).fill(0).map((_, i) => ({
+                value: i + 1,
+                label: `${i + 1}`,
+              }))}
+              onChange={handleAddCapacity}
+            />
+          </Show>
 
-        <Show when={!hasTasks()}>
-          <p>You have no tasks for today.</p>
-        </Show>
-      </SecondaryMessage>
+          <Show when={!hasTasks()}>
+            <p>You have no tasks for today.</p>
+          </Show>
+        </SecondaryMessage>
+      </Show>
 
       <Show when={!isDesktop()}>
         <ToolBar>
