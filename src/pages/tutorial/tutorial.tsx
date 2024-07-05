@@ -55,7 +55,7 @@ function Step1() {
 function Step2() {
   return (
     <>
-      <img src="/icon-only.png"></img>
+      <img src="/icon.png" />
 
       <p>
         <span class={styles.spoons}>Spoons</span> is based on the

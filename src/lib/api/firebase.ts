@@ -8,7 +8,7 @@ import {
 
 export const firebaseConfig = {
   apiKey: "AIzaSyDI6ZBz1raCb2Hm3BIuJPg7nm6l0KlkiDI",
-  authDomain: "adhd-time-897ea.firebaseapp.com",
+  authDomain: "spoons.zachsanders.dev",
   projectId: "adhd-time-897ea",
   storageBucket: "adhd-time-897ea.appspot.com",
   messagingSenderId: "325287074111",

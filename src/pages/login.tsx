@@ -1,11 +1,11 @@
-import { Show, createEffect, createSignal } from "solid-js";
+import { Show, createEffect, createSignal, onCleanup } from "solid-js";
 
 import styles from "./login.module.scss";
 
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 
-import { Toaster, showToastPromise } from "~/components/ui/toast";
+import { Toaster, showToast } from "~/components/ui/toast";
 import {
   loginWithEmailAndPassword,
   loginAnonymously,
@@ -24,10 +24,13 @@ export default function LoginPage() {
       return;
     }
 
-    showToastPromise(prom, {
-      error: (error?: { message?: string }) =>
-        `Error: '${error?.message || "Unknown error"}'`,
-    });
+    prom.catch((error?: { message?: string }) =>
+      showToast({
+        title: "Login Error",
+        description: `${error?.message || "Unknown error"}`,
+        duration: 5000,
+      })
+    );
   });
 
   const [mode, setMode] = createSignal<Mode>("Register");
